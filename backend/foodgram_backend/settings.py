@@ -16,8 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework.authtoken',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
@@ -53,7 +53,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -93,26 +92,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
-    "DEFAULT_PAGINATION_CLASS": (
-        "rest_framework.pagination."
-        "PageNumberPagination"
-    ),
-    "PAGE_SIZE": 10,
-}
-
-DJOSER = {
-    "LOGIN_FIELD": "email",
-    "SERIALIZERS": {
-        "user_create": "api.serializers.UserSerializer",
-        "user": "api.serializers.UserSerializer",
-    },
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
