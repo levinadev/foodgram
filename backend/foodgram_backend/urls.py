@@ -5,8 +5,12 @@ from django.urls import path, include, re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(r'^auth/', include('djoser.urls')),  # регистрация, профиль
-    re_path(r'^auth/', include('djoser.urls.authtoken'))  # токены
+    re_path(r'^api/', include('djoser.urls')),
+    re_path(r'^api/', include('djoser.urls.authtoken')),
+
+    # алиас для фронта
+    path("api/auth/", include("djoser.urls")),
+    path("api/auth/", include("djoser.urls.authtoken")),
 ]
 
 if settings.DEBUG:
