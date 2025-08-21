@@ -104,7 +104,6 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    "LOGIN_FIELD": "email",  # теперь вход по email
-    "USER_CREATE_PASSWORD_RETYPE": True,  # два раза пароль при регистрации
+    "LOGIN_FIELD": "email",
     "SERIALIZERS": {},
 }
