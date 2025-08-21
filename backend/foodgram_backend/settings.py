@@ -92,7 +92,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -101,4 +101,10 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",  # теперь вход по email
+    "USER_CREATE_PASSWORD_RETYPE": True,  # два раза пароль при регистрации
+    "SERIALIZERS": {},
 }
