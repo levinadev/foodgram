@@ -5,8 +5,8 @@ from django.urls import path, include, re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(r'^api/', include('djoser.urls')),
-    re_path(r'^api/', include('djoser.urls.authtoken')),
+    path("api/", include("djoser.urls")),
+    path("api/", include("djoser.urls.authtoken")),
 
     # алиас для фронта
     path("api/auth/", include("djoser.urls")),
