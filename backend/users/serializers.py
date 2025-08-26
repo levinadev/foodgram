@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from users.models import User
+from .models import (
+    User,
+    Follow
+)
 
 
 class AvatarSerializer(serializers.ModelSerializer):
@@ -26,5 +29,7 @@ class UserSerializer(DjoserUserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        # TODO добавить логику подписки позже
-        return False
+        user = self.context.get("request").user
+        if user.is_anonymous:
+            return False
+        return Follow.objects.filter(user=user, author=obj).exists()
