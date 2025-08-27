@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import (
     User,
-    Follow,
+    Subscription,
 )
 from .serializers import (
     AvatarSerializer,
@@ -28,7 +28,6 @@ class SubscriptionsListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        print("I HERE!!!")
         user = self.request.user
-        author_ids = Follow.objects.filter(user=user).values_list('author_id', flat=True)
+        author_ids = Subscription.objects.filter(user=user).values_list('author_id', flat=True)
         return User.objects.filter(id__in=author_ids)
