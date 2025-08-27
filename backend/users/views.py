@@ -10,7 +10,7 @@ from .serializers import (
 )
 
 
-class AvatarUpdateView(generics.UpdateAPIView):
+class AvatarView(generics.UpdateAPIView):
     serializer_class = AvatarSerializer
     permission_classes = [permissions.IsAuthenticated]
 
