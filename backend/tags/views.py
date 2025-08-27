@@ -1,10 +1,11 @@
-# tags/views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import AllowAny
 
-class TagsStubView(APIView):
-    permission_classes = [AllowAny]
+from .models import Tag
+from .serializers import TagSerializer
 
-    def get(self, request, *args, **kwargs):
-        return Response([])  # пустой список тегов
+
+class TagViewSet(ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [AllowAny]
