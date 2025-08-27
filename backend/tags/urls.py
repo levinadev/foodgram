@@ -1,7 +1,7 @@
-# recipes/urls.py
-from django.urls import path
-from .views import TagsStubView
+from rest_framework.routers import DefaultRouter
+from .views import TagViewSet
 
-urlpatterns = [
-    path("", TagsStubView.as_view(), name="tags_stub"),
-]
+router = DefaultRouter()
+router.register(r"", TagViewSet, basename="tags")
+
+urlpatterns = router.urls
