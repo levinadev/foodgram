@@ -52,6 +52,8 @@ class Recipe(models.Model):
         help_text="Тег"
     )
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
