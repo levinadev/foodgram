@@ -1,16 +1,16 @@
-# recipes/views.py
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework import viewsets, permissions
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Recipe
+from .serializers import RecipeSerializer
+from .filters import RecipeFilter  # FIXME позже создадим фильтр
 
 
-class RecipesStubView(APIView):
-    permission_classes = [AllowAny]
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # filter_backends = [DjangoFilterBackend] # FIXME позже создадим фильтр
+    # filterset_class = RecipeFilter # FIXME позже создадим фильтр
 
-    def get(self, request, *args, **kwargs):
-        return Response({
-            "count": 0,
-            "next": None,
-            "previous": None,
-            "results": []
-        })
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
