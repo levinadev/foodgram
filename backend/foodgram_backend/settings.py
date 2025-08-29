@@ -7,6 +7,10 @@ SECRET_KEY = 'django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo
 
 DEBUG = True
 
+# URL фронтенда (куда ведут короткие ссылки)
+FRONTEND_URL = "http://localhost"
+
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
