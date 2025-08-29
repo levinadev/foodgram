@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
     'tags.apps.TagsConfig',
+    'ingredients.apps.IngredientsConfig',
     'favorites.apps.FavoritesConfig',
 ]
 
