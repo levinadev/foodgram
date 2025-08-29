@@ -4,8 +4,9 @@ from drf_extra_fields.fields import Base64ImageField
 from users.serializers import ShortUserSerializer
 from tags.serializers import TagSerializer
 
-from .models import Recipe, Ingredient, RecipeIngredient
+from .models import Recipe, RecipeIngredient
 from tags.models import Tag
+from ingredients.models import Ingredient
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
