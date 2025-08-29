@@ -7,6 +7,10 @@ SECRET_KEY = 'django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo
 
 DEBUG = True
 
+# URL фронтенда (куда ведут короткие ссылки)
+FRONTEND_URL = "http://localhost"
+
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -22,8 +26,9 @@ INSTALLED_APPS = [
     'djoser',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
+    'tags.apps.TagsConfig',
+    'ingredients.apps.IngredientsConfig',
     'favorites.apps.FavoritesConfig',
-    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -102,12 +107,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 6,
 }
 
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
-        "user": "api.serializers.UserSerializer",
-        "current_user": "api.serializers.UserSerializer",
+        "user": "users.serializers.UserSerializer",
+        "current_user": "users.serializers.UserSerializer",
     },
 }
