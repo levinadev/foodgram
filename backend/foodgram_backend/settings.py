@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import logging
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -119,5 +120,20 @@ DJOSER = {
     "SERIALIZERS": {
         "user": "users.serializers.UserSerializer",
         "current_user": "users.serializers.UserSerializer",
+    },
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }
