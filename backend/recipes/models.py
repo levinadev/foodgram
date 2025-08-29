@@ -1,13 +1,15 @@
 from django.db import models
+
 from tags.models import Tag
-from users.models import User
 from ingredients.models import Ingredient
+
+from django.conf import settings
 
 
 class Recipe(models.Model):
     """Модель рецепта"""
     author = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="recipes",
         help_text="Пользователь, который создал рецепт"
@@ -62,3 +64,21 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         unique_together = ("recipe", "ingredient")
+
+
+class Favorite(models.Model):
+    """Избранные рецепты"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        help_text="Пользователь, добавивший рецепт в избранное"
+    )
+    recipe = models.ForeignKey(
+        "Recipe",
+        on_delete=models.CASCADE,
+        related_name="favorites",
+        help_text="Рецепт, добавленный в избранное"
+    )
+
+    class Meta:
+        unique_together = ("user", "recipe")
