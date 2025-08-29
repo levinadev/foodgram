@@ -9,16 +9,18 @@ class User(AbstractUser):
         unique=True,
         blank=True,
         null=True,
+        help_text="Имя пользователя"
     )
     email = models.EmailField(
         unique=True,
         max_length=254,
+        help_text="Электронная почта"
     )
-
     avatar = models.ImageField(
         upload_to='users/',
         blank=True,
-        null=True
+        null=True,
+        help_text="Аватар"
     )
 
     USERNAME_FIELD = "email"
@@ -28,10 +30,16 @@ class User(AbstractUser):
 class Subscription(models.Model):
     """Модель подписки пользователя на автора"""
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="subscriptions"
+        User,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+        help_text="Пользователь, который подписывается"
     )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="subscribers"
+        User,
+        on_delete=models.CASCADE,
+        related_name="subscribers",
+        help_text = "Автор, на которого подписываются"
     )
 
     objects = models.Manager()

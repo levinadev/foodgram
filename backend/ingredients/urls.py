@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
-from .views import TagViewSet
+from .views import IngredientViewSet
 
 router = DefaultRouter()
-router.register(r"", TagViewSet, basename="tags")
+router.register(r"", IngredientViewSet, basename="ingredients")
 
 urlpatterns = router.urls

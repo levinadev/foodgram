@@ -1,7 +1,7 @@
-# recipes/urls.py
-from django.urls import path
-from .views import RecipesStubView
+from rest_framework.routers import DefaultRouter
+from .views import RecipeViewSet
 
-urlpatterns = [
-    path("", RecipesStubView.as_view(), name="recipes_stub"),
-]
+router = DefaultRouter()
+router.register(r"", RecipeViewSet, basename="recipes")
+
+urlpatterns = router.urls
