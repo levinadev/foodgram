@@ -4,7 +4,7 @@ from drf_extra_fields.fields import Base64ImageField
 from users.serializers import ShortUserSerializer
 from tags.serializers import TagSerializer
 
-from .models import Recipe, RecipeIngredient
+from .models import Recipe, RecipeIngredient, Favorite
 from tags.models import Tag
 from ingredients.models import Ingredient
 
@@ -38,8 +38,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
 
     def get_is_favorited(self, obj):
-        # TODO: временно всегда возвращаем False
-        return False
+        user = self.context["request"].user
+        if user.is_anonymous:
+            return False
+        return Favorite.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         # TODO: временно всегда возвращаем False
@@ -56,6 +58,13 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ("id", "amount")
+
+
+class ShortRecipeSerializer(serializers.ModelSerializer):
+    """Короткий сериализатор для избранного/корзины"""
+    class Meta:
+        model = Recipe
+        fields = ["id", "name", "image", "cooking_time"]
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
