@@ -82,3 +82,24 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ("user", "recipe")
+
+
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="shopping_cart",
+        help_text="Пользователь, которому принадлежит список покупок"
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="in_shopping_cart",
+        help_text="Рецепт, добавленный в список покупок"
+    )
+
+    class Meta:
+        unique_together = ("user", "recipe")
+
+    def __str__(self):
+        return f"{self.user} — {self.recipe}"
