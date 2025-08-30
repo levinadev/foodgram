@@ -100,8 +100,6 @@ class ShoppingCart(models.Model):
 
     class Meta:
         unique_together = ("user", "recipe")
-        verbose_name = "Список покупок"
-        verbose_name_plural = "Списки покупок"
 
     def __str__(self):
         return f"{self.user} — {self.recipe}"
