@@ -48,7 +48,8 @@ class SubscriptionsView(generics.GenericAPIView):
         """Подписка на пользователя"""
         author = get_object_or_404(User, id=id)
         Subscription.objects.get_or_create(user=request.user, author=author)
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = UserSerializer(author, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id, *args, **kwargs):
         """Отписка от пользователя"""
@@ -56,4 +57,5 @@ class SubscriptionsView(generics.GenericAPIView):
         deleted, _ = Subscription.objects.filter(user=request.user, author=author).delete()
         if deleted == 0:
             return Response({"detail": "Вы не были подписаны"}, status=400)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = UserSerializer(author, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
