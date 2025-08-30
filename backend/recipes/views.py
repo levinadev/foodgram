@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.http import HttpResponse
 from django.db.models import Sum
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import (
     Recipe,
@@ -19,7 +20,7 @@ from .serializers import (
     RecipeCreateSerializer,
     ShortRecipeSerializer
 )
-from .filters import RecipeFilter  # FIXME позже создадим фильтр
+from .filters import RecipeFilter
 
 import logging
 
@@ -31,8 +32,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    # filter_backends = [DjangoFilterBackend] # FIXME позже создай фильтр
-    # filterset_class = RecipeFilter # FIXME позже создай фильтр
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RecipeFilter
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
