@@ -4,10 +4,12 @@ services:
     image: postgres:14
     container_name: foodgram-db
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: foodgram
-      POSTGRES_USER: foodgram_user
-      POSTGRES_PASSWORD: foodgram_pass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -27,11 +29,13 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - .env
     environment:
       DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: foodgram
-      DB_USER: foodgram_user
-      DB_PASSWORD: foodgram_pass
+      POSTGRES_DB: foodgram
+      POSTGRES_USER: foodgram_user
+      POSTGRES_PASSWORD: foodgram_pass
       DB_HOST: db
       DB_PORT: 5432
 

@@ -1,18 +1,19 @@
 import os
 from pathlib import Path
-import logging
+
+from config import (DB_HOST, DB_PORT, DJANGO_ALLOWED_HOSTS, DJANGO_DEBUG,
+                    DJANGO_SECRET_KEY, POSTGRES_DB, POSTGRES_PASSWORD,
+                    POSTGRES_USER, FRONTEND_URL)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo'
+SECRET_KEY = DJANGO_SECRET_KEY
 
-DEBUG = True
+DEBUG = DJANGO_DEBUG
 
-# URL фронтенда (куда ведут короткие ссылки)
-FRONTEND_URL = "http://localhost"
+FRONTEND_URL = FRONTEND_URL
 
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -61,13 +62,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
-        'NAME': os.getenv("DB_NAME", "foodgram"),
-        'USER': os.getenv("DB_USER", "foodgram_user"),
-        'PASSWORD': os.getenv("DB_PASSWORD", "foodgram_pass"),
-        'HOST': os.getenv("DB_HOST", "db"),
-        'PORT': os.getenv("DB_PORT", 5432),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": POSTGRES_DB,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
+        "HOST": DB_HOST,
+        "PORT": DB_PORT,
     }
 }
 
@@ -126,7 +127,6 @@ DJOSER = {
         "current_user": "users.serializers.UserSerializer",
     },
 }
-
 
 LOGGING = {
     "version": 1,
