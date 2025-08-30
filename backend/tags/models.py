@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Tag(models.Model):
     """Модель тега для поиска данных"""
     name = models.CharField(

@@ -1,28 +1,18 @@
+import logging
+
 from django.conf import settings
-from rest_framework import viewsets, permissions
+from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from django.http import HttpResponse
-from django.db.models import Sum
-from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import (
-    Recipe,
-    Favorite,
-    RecipeIngredient,
-    ShoppingCart
-)
-
-from .serializers import (
-    RecipeSerializer,
-    RecipeCreateSerializer,
-    ShortRecipeSerializer
-)
 from .filters import RecipeFilter
-
-import logging
+from .models import Favorite, Recipe, RecipeIngredient, ShoppingCart
+from .serializers import (RecipeCreateSerializer, RecipeSerializer,
+                          ShortRecipeSerializer)
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from .models import (
-    User,
-    Subscription,
-)
-from .serializers import (
-    AvatarSerializer,
-    UserSerializer,
-)
+
+from .models import Subscription, User
+from .serializers import AvatarSerializer, UserSerializer
 
 
 class AvatarView(generics.UpdateAPIView):
