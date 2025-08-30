@@ -16,14 +16,27 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='favorite',
             name='recipe',
-            field=models.ForeignKey(help_text='Рецепт, добавленный в избранное', on_delete=django.db.models.deletion.CASCADE, related_name='favorites', to='recipes.recipe'),
+            field=models.ForeignKey(
+                help_text='Рецепт, добавленный в избранное',
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='favorites',
+                to='recipes.recipe'),
         ),
         migrations.CreateModel(
             name='ShoppingCart',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(help_text='Рецепт, добавленный в список покупок', on_delete=django.db.models.deletion.CASCADE, related_name='in_shopping_cart', to='recipes.recipe')),
-                ('user', models.ForeignKey(help_text='Пользователь, которому принадлежит список покупок', on_delete=django.db.models.deletion.CASCADE, related_name='shopping_cart', to=settings.AUTH_USER_MODEL)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('recipe',
+                 models.ForeignKey(help_text='Рецепт, добавленный в список покупок',
+                                   on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='in_shopping_cart',
+                                   to='recipes.recipe')),
+                ('user',
+                 models.ForeignKey(help_text='Пользователь, которому принадлежит список покупок',
+                                   on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='shopping_cart',
+                                   to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Список покупок',

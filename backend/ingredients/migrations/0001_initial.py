@@ -14,9 +14,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ingredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text="Название ингредиента, например: 'Сахар', 'Молоко'", max_length=128)),
-                ('measurement_unit', models.CharField(help_text="Единица измерения ингредиента, например: 'г', 'мл'", max_length=32)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(
+                    help_text="Название ингредиента, например: 'Сахар', 'Молоко'", max_length=128)),
+                ('measurement_unit', models.CharField(
+                    help_text="Единица измерения ингредиента, например: 'г', 'мл'", max_length=32)),
             ],
         ),
     ]

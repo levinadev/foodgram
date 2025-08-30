@@ -15,12 +15,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='recipeingredient',
             name='ingredient',
-            field=models.ForeignKey(help_text='Ингредиент рецепта', on_delete=django.db.models.deletion.CASCADE, to='ingredients.ingredient'),
+            field=models.ForeignKey(
+                help_text='Ингредиент рецепта',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='ingredients.ingredient'),
         ),
         migrations.AlterField(
             model_name='recipe',
             name='ingredients',
-            field=models.ManyToManyField(help_text='Ингредиенты', related_name='recipes', through='recipes.RecipeIngredient', to='ingredients.ingredient'),
+            field=models.ManyToManyField(
+                help_text='Ингредиенты',
+                related_name='recipes',
+                through='recipes.RecipeIngredient',
+                to='ingredients.ingredient'),
         ),
         migrations.DeleteModel(
             name='Ingredient',
