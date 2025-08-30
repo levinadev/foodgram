@@ -14,4 +14,5 @@ dependencies = [
     "drf-extra-fields>=3.7.0",
     "pillow>=11.3.0",
     "psycopg2-binary>=2.9.10",
+    "python-dotenv>=1.1.1",
 ]
