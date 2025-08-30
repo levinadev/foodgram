@@ -13,6 +13,10 @@ from .models import (
 from tags.models import Tag
 from ingredients.models import Ingredient
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор ингредиентов для рецепта"""
@@ -26,7 +30,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """Основной сериализатор рецепта"""
+    """Сериализатор для чтения рецепта"""
     ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
     tags = TagSerializer(many=True)
     author = ShortUserSerializer()
@@ -43,12 +47,14 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
 
     def get_is_favorited(self, obj):
+        """True, если рецепт в избранном у пользователя"""
         user = self.context["request"].user
         if user.is_anonymous:
             return False
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
+        """True, если рецепт в корзине у пользователя"""
         user = self.context["request"].user
         if user.is_anonymous:
             return False

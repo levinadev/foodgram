@@ -31,8 +31,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    # filter_backends = [DjangoFilterBackend] # FIXME позже создадим фильтр
-    # filterset_class = RecipeFilter # FIXME позже создадим фильтр
+    # filter_backends = [DjangoFilterBackend] # FIXME позже создай фильтр
+    # filterset_class = RecipeFilter # FIXME позже создай фильтр
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -43,7 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         user = self.request.user
 
-        # Временная фильтрация по избранному (до фильтров через DjangoFilterBackend)
+        # Временная фильтрация по избранному
         if self.request.query_params.get("is_favorited") == "1" and user.is_authenticated:
             qs = qs.filter(favorites__user=user)
 
@@ -124,7 +124,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f"{ing['ingredient__name']} ({ing['ingredient__measurement_unit']}) — {ing['total_amount']}"
             )
 
-        # Формируем TXT-файл
         content = "\n".join(shopping_list)
         response = HttpResponse(content, content_type="text/plain")
         response["Content-Disposition"] = "attachment; filename=shopping_list.txt"
