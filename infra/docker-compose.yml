@@ -35,7 +35,7 @@ services:
       DB_ENGINE: django.db.backends.postgresql
       POSTGRES_DB: foodgram
       POSTGRES_USER: foodgram_user
-      POSTGRES_PASSWORD: foodgram_pass
+      POSTGRES_PASSWORD: foodgram_password
       DB_HOST: db
       DB_PORT: 5432
 
