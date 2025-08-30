@@ -53,10 +53,9 @@ services:
       - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../frontend/build:/usr/share/nginx/html/  # Фронтенд (React/Vue)
-      - ../docs/:/usr/share/nginx/html/api/docs/  # Документация
-      - ../backend/media:/var/www/media:ro        # Медиа файлы
-      - ../backend/static:/var/www/static:ro      # Статика Django
-
+      - ../frontend/build:/usr/share/nginx/html/
+      - ../docs/:/usr/share/nginx/html/api/docs/
+      - ../backend/media:/var/www/media:ro
+      - ../backend/static:/var/www/static:ro 
 volumes:
   postgres_data:
