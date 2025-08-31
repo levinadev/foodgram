@@ -37,6 +37,11 @@ services:
       DB_HOST: db
       DB_PORT: 5432
 
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8000 || exit 1"]
+      interval: 5s
+      retries: 5
+
   frontend:
     image: annalevina/foodgram_frontend
     container_name: foodgram-front
@@ -53,6 +58,9 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../backend/media:/var/www/media:ro
       - ../backend/static:/var/www/static:ro
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:
