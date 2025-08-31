@@ -18,29 +18,40 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ingredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text="Название ингредиента, например: 'Сахар', 'Молоко'", max_length=128)),
-                ('measurement_unit', models.CharField(help_text="Единица измерения ингредиента, например: 'г', 'мл'", max_length=32)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(
+                    help_text="Название ингредиента, например: 'Сахар', 'Молоко'", max_length=128)),
+                ('measurement_unit', models.CharField(
+                    help_text="Единица измерения ингредиента, например: 'г', 'мл'", max_length=32)),
             ],
         ),
         migrations.CreateModel(
             name='Recipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(help_text='Название рецепта', max_length=200)),
                 ('image', models.ImageField(help_text='Фото блюда', upload_to='recipes/images/')),
                 ('text', models.TextField(help_text='Описание рецепта')),
-                ('cooking_time', models.PositiveIntegerField(help_text='Время приготовления в минутах')),
-                ('author', models.ForeignKey(help_text='Пользователь, который создал рецепт', on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to=settings.AUTH_USER_MODEL)),
+                ('cooking_time', models.PositiveIntegerField(
+                    help_text='Время приготовления в минутах')),
+                ('author',
+                 models.ForeignKey(help_text='Пользователь, который создал рецепт',
+                                   on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='recipes',
+                                   to=settings.AUTH_USER_MODEL)),
                 ('tags', models.ManyToManyField(help_text='Тег', related_name='recipes', to='tags.tag')),
             ],
         ),
         migrations.CreateModel(
             name='RecipeIngredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('amount', models.PositiveIntegerField()),
-                ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.ingredient')),
+                ('ingredient', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='recipes.ingredient')),
                 ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.recipe')),
             ],
             options={
@@ -50,6 +61,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='recipe',
             name='ingredients',
-            field=models.ManyToManyField(help_text='Ингредиенты', related_name='recipes', through='recipes.RecipeIngredient', to='recipes.ingredient'),
+            field=models.ManyToManyField(
+                help_text='Ингредиенты',
+                related_name='recipes',
+                through='recipes.RecipeIngredient',
+                to='recipes.ingredient'),
         ),
     ]

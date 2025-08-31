@@ -19,11 +19,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='recipeingredient',
             name='ingredient',
-            field=models.ForeignKey(help_text='Ингредиент рецепта', on_delete=django.db.models.deletion.CASCADE, to='recipes.ingredient'),
+            field=models.ForeignKey(
+                help_text='Ингредиент рецепта',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='recipes.ingredient'),
         ),
         migrations.AlterField(
             model_name='recipeingredient',
             name='recipe',
-            field=models.ForeignKey(help_text='Рецепт, к которому относится ингредиент', on_delete=django.db.models.deletion.CASCADE, to='recipes.recipe'),
+            field=models.ForeignKey(
+                help_text='Рецепт, к которому относится ингредиент',
+                on_delete=django.db.models.deletion.CASCADE,
+                to='recipes.recipe'),
         ),
     ]

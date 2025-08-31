@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import (
-    AvatarView,
-    SubscriptionsView
-)
+
+from .views import AvatarView, SubscriptionsView
 
 urlpatterns = [
     path("me/avatar/", AvatarView.as_view(), name="user-avatar"),

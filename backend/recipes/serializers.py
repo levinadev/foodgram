@@ -1,19 +1,14 @@
-from rest_framework import serializers
-from drf_extra_fields.fields import Base64ImageField
-
-from users.serializers import ShortUserSerializer
-from tags.serializers import TagSerializer
-
-from .models import (
-    Recipe,
-    RecipeIngredient,
-    Favorite,
-    ShoppingCart
-)
-from tags.models import Tag
-from ingredients.models import Ingredient
-
 import logging
+
+from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
+
+from ingredients.models import Ingredient
+from tags.models import Tag
+from tags.serializers import TagSerializer
+from users.serializers import ShortUserSerializer
+
+from .models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 
 logger = logging.getLogger(__name__)
 

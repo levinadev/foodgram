@@ -1,9 +1,8 @@
+from django.conf import settings
 from django.db import models
 
-from tags.models import Tag
 from ingredients.models import Ingredient
-
-from django.conf import settings
+from tags.models import Tag
 
 
 class Recipe(models.Model):

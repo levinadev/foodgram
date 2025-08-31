@@ -39,7 +39,7 @@ class Subscription(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name="subscribers",
-        help_text = "Автор, на которого подписываются"
+        help_text="Автор, на которого подписываются"
     )
 
     objects = models.Manager()
