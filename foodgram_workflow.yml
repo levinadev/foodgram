@@ -24,6 +24,8 @@ jobs:
           context: ./backend/
           push: true
           tags: annalevina/foodgram_backend:latest
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 
   build_and_push_frontend:
     name: Build & Push Frontend Docker Image
@@ -91,6 +93,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd ~/foodgram
+            export DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down
             sudo docker compose -f docker-compose.production.yml up -d
