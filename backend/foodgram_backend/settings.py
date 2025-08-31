@@ -13,6 +13,8 @@ DEBUG = DJANGO_DEBUG
 
 FRONTEND_URL = FRONTEND_URL
 
+CSRF_TRUSTED_ORIGINS = [f"http://{host}:8000" for host in DJANGO_ALLOWED_HOSTS]
+
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
 
 INSTALLED_APPS = [
@@ -96,7 +98,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "collected_static"
+STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
