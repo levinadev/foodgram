@@ -60,4 +60,12 @@ class UserSerializer(BaseUserSerializer):
 
 class ShortUserSerializer(BaseUserSerializer):
     """Сериализатор для получения всех рецептов без списка рецептов"""
-    pass
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "full_name")
+
+    def get_full_name(self, obj):
+        name = f"{obj.first_name} {obj.last_name}".strip()
+        return name if name else obj.username
