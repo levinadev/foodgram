@@ -60,12 +60,34 @@ class UserSerializer(BaseUserSerializer):
 
 class ShortUserSerializer(BaseUserSerializer):
     """Сериализатор для получения всех рецептов без списка рецептов"""
-    full_name = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()  # 🔹 добавляем
 
     class Meta:
         model = User
-        fields = ("id", "username", "full_name")
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "is_subscribed",
+            "avatar",
+            "full_name",
+        )
+
+    def get_is_subscribed(self, obj):
+        user = self.context["request"].user
+        if user.is_anonymous:
+            return False
+        return Subscription.objects.filter(user=user, author=obj).exists()
+
+    def get_avatar(self, obj):
+        request = self.context["request"]
+        if obj.avatar:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
 
     def get_full_name(self, obj):
-        name = f"{obj.first_name} {obj.last_name}".strip()
-        return name if name else obj.username
+        return f"{obj.first_name} {obj.last_name}".strip()
