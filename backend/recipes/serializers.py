@@ -17,7 +17,9 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор ингредиентов для рецепта"""
     id = serializers.ReadOnlyField(source="ingredient.id")
     name = serializers.ReadOnlyField(source="ingredient.name")
-    measurement_unit = serializers.ReadOnlyField(source="ingredient.measurement_unit")
+    measurement_unit = serializers.ReadOnlyField(
+        source="ingredient.measurement_unit"
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -26,7 +28,10 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для чтения рецепта"""
-    ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
+    ingredients = RecipeIngredientSerializer(
+        source="recipeingredient_set",
+        many=True
+    )
     tags = TagSerializer(many=True)
     author = ShortUserSerializer()
     is_favorited = serializers.SerializerMethodField()
@@ -78,7 +83,10 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания/обновления рецепта"""
     ingredients = RecipeIngredientWriteSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
+    )
     image = Base64ImageField()
 
     class Meta:
@@ -109,7 +117,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         instance.name = validated_data.get("name", instance.name)
         instance.text = validated_data.get("text", instance.text)
-        instance.cooking_time = validated_data.get("cooking_time", instance.cooking_time)
+        instance.cooking_time = validated_data.get(
+            "cooking_time",
+            instance.cooking_time
+        )
         if "image" in validated_data:
             instance.image = validated_data["image"]
         instance.save()

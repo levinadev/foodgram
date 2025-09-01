@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.db.models import Count
 
-from tags.models import Tag
-
 from .models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 
 
