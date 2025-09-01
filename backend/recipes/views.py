@@ -122,10 +122,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         shopping_list = []
         for ing in ingredients:
             shopping_list.append(
-                f"{
-                    ing['ingredient__name']} ({
-                    ing['ingredient__measurement_unit']}) — {
-                    ing['total_amount']}"
+                (
+                    f"{ing['ingredient__name']} "
+                    f"({ing['ingredient__measurement_unit']}) — "
+                    f"{ing['total_amount']}"
+                )
             )
 
         content = "\n".join(shopping_list)
