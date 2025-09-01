@@ -26,7 +26,9 @@ class SubscriptionsView(generics.GenericAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        author_ids = Subscription.objects.filter(user=user).values_list('author_id', flat=True)
+        author_ids = Subscription.objects.filter(user=user).values_list(
+            'author_id', flat=True
+        )
         return User.objects.filter(id__in=author_ids)
 
     def get(self, request, *args, **kwargs):
@@ -49,7 +51,10 @@ class SubscriptionsView(generics.GenericAPIView):
     def delete(self, request, id, *args, **kwargs):
         """Отписка от пользователя"""
         author = get_object_or_404(User, id=id)
-        deleted, _ = Subscription.objects.filter(user=request.user, author=author).delete()
+        deleted, _ = Subscription.objects.filter(
+            user=request.user,
+            author=author
+        ).delete()
         if deleted == 0:
             return Response({"detail": "Вы не были подписаны"}, status=400)
         serializer = UserSerializer(author, context={"request": request})

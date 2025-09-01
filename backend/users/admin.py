@@ -6,7 +6,9 @@ from .models import Subscription, User
 
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "first_name", "last_name", "is_active")
+    list_display = (
+        "username", "email", "first_name", "last_name", "is_active"
+    )
     search_fields = ("username", "email")
 
     def save_model(self, request, obj, form, change):

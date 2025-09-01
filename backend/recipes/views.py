@@ -58,7 +58,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, pk=pk)
 
         if request.method == "POST":
-            obj, created = Favorite.objects.get_or_create(user=request.user, recipe=recipe)
+            obj, created = Favorite.objects.get_or_create(
+                user=request.user,
+                recipe=recipe
+            )
             if not created:
                 return Response(
                     {"errors": "Уже в избранном"},
@@ -68,7 +71,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
-            deleted, _ = Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+            deleted, _ = Favorite.objects.filter(
+                user=request.user,
+                recipe=recipe
+            ).delete()
             if not deleted:
                 return Response(
                     {"errors": "Рецепт не был в избранном"},
@@ -124,5 +130,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         content = "\n".join(shopping_list)
         response = HttpResponse(content, content_type="text/plain")
-        response["Content-Disposition"] = "attachment; filename=shopping_list.txt"
+        response["Content-Disposition"] = (
+            "attachment; filename=shopping_list.txt"
+        )
         return response

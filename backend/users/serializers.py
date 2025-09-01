@@ -1,4 +1,3 @@
-from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -20,13 +19,19 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "username", "first_name", "last_name", "avatar", "is_subscribed")
+        fields = (
+            "id", "email", "username", "first_name",
+            "last_name", "avatar", "is_subscribed"
+        )
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
         if not request or request.user.is_anonymous:
             return False
-        return Subscription.objects.filter(user=request.user, author=obj).exists()
+        return Subscription.objects.filter(
+            user=request.user,
+            author=obj
+        ).exists()
 
 
 class UserSerializer(BaseUserSerializer):
