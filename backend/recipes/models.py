@@ -1,8 +1,42 @@
 from django.conf import settings
 from django.db import models
 
-from ingredients.models import Ingredient
-from tags.models import Tag
+
+class Ingredient(models.Model):
+    """Модель ингредиента"""
+    name = models.CharField(
+        max_length=128,
+        help_text="Название ингредиента, например: 'Сахар', 'Молоко'"
+    )
+    measurement_unit = models.CharField(
+        max_length=32,
+        help_text="Единица измерения ингредиента, например: 'г', 'мл'"
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.measurement_unit})"
+
+
+class Tag(models.Model):
+    """Модель тега для поиска данных"""
+    name = models.CharField(
+        max_length=32,
+        unique=True,
+        help_text="Название тега"
+    )
+    slug = models.SlugField(
+        max_length=32,
+        unique=True,
+        help_text="slug тега"
+    )
+
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -18,7 +52,7 @@ class Recipe(models.Model):
         help_text="Название рецепта"
     )
     image = models.ImageField(
-        upload_to="recipes/images/",
+        upload_to="recipes/",
         help_text="Фото блюда"
     )
     text = models.TextField(
