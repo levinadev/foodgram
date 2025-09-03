@@ -62,6 +62,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -124,7 +131,8 @@ REST_FRAMEWORK = {
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
-        "user": "api.serializers.UserSerializer",
+        "user_create": "api.serializers.UserCreateSerializer",
+        "user": "api.serializers.BaseUserSerializer",
         "current_user": "api.serializers.UserSerializer",
     },
 }

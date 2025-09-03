@@ -2,6 +2,7 @@ import logging
 
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 
 from recipes.models import (
     Favorite, Recipe, RecipeIngredient,
@@ -94,6 +95,24 @@ class UserSerializer(BaseUserSerializer):
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
+
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    """Сериализатор для создания пользователей"""
+
+    first_name = serializers.CharField(required=True, max_length=150)
+    last_name = serializers.CharField(required=True, max_length=150)
+
+    class Meta(BaseUserCreateSerializer.Meta):
+        model = User
+        fields = (
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "password",
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
