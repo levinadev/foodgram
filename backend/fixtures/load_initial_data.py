@@ -1,10 +1,17 @@
-import json
 import os
+import django
+import sys
+import json
+
+sys.path.append('/app')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'foodgram_backend.settings')
+django.setup()
+
 from recipes.models import Ingredient
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+file_path = '/app/fixtures/ingredients.json'
 
-with open(os.path.join(BASE_DIR, 'ingredients.json'), encoding='utf-8') as f:
+with open(file_path, encoding='utf-8') as f:
     data = json.load(f)
 
 for item in data:
@@ -12,3 +19,5 @@ for item in data:
         name=item['name'],
         defaults={'measurement_unit': item['measurement_unit']}
     )
+
+print(f'Загружено {len(data)} ингредиентов.')
