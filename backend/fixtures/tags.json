@@ -9,10 +9,18 @@
   },
   {
     "model": "recipes.tag",
-    "pk": 1,
+    "pk": 2,
     "fields": {
-      "name": "Завтрак",
-      "slug": "breakfast"
+      "name": "Обед",
+      "slug": "lunch"
+    }
+  },
+  {
+    "model": "recipes.tag",
+    "pk": 3,
+    "fields": {
+      "name": "Ужин",
+      "slug": "dinner"
     }
   }
 ]
