@@ -5,6 +5,8 @@
     "fields": {
       "email": "admin@mail.com",
       "username": "admin",
+      "first_name": "Admin",
+      "last_name": "Admin",
       "is_staff": true,
       "is_superuser": true,
       "is_active": true,
