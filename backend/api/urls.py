@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from django.urls import path
+from django.urls import path, include
 from .views import (
     IngredientViewSet, TagViewSet, RecipeViewSet,
     AvatarView, SubscriptionsView
@@ -10,19 +10,21 @@ router.register(r"recipes", RecipeViewSet, basename="recipes")
 router.register(r"ingredients", IngredientViewSet, basename="ingredients")
 router.register(r"tags", TagViewSet, basename="tags")
 
-urlpatterns = router.urls
 
+urlpatterns = [
+    path('auth/', include('djoser.urls.authtoken')),
+    path('', include(router.urls)),
 
-urlpatterns += [
-    path(
-        "users/me/avatar/",
-        AvatarView.as_view(),
-        name="user-avatar"
-    ),
     path(
         "users/subscriptions/",
         SubscriptionsView.as_view(),
         name="user-all-subscriptions"
+    ),
+    path('', include('djoser.urls')),
+    path(
+        "users/me/avatar/",
+        AvatarView.as_view(),
+        name="user-avatar"
     ),
     path(
         "users/<int:id>/subscribe/",
