@@ -164,7 +164,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = super().get_queryset()
         name = self.request.query_params.get("name")
         if name:
-            queryset = queryset.filter(name__icontains=name)
+            queryset = queryset.filter(name__istartswith=name)
         return queryset
 
 
