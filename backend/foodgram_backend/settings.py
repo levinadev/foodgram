@@ -118,7 +118,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -133,7 +133,7 @@ DJOSER = {
     "SERIALIZERS": {
         "user_create": "api.serializers.UserCreateSerializer",
         "user": "api.serializers.BaseUserSerializer",
-        "current_user": "api.serializers.UserSerializer",
+        "current_user": "api.serializers.BaseUserSerializer",
     },
     "PERMISSIONS": {
         "user_list": ["rest_framework.permissions.AllowAny"],

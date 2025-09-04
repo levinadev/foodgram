@@ -154,15 +154,17 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         """True, если рецепт в избранном у пользователя"""
-        user = self.context["request"].user
-        if user.is_anonymous:
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if not user or user.is_anonymous:
             return False
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         """True, если рецепт в корзине у пользователя"""
-        user = self.context["request"].user
-        if user.is_anonymous:
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if not user or user.is_anonymous:
             return False
         return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
 
