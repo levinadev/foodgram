@@ -42,7 +42,6 @@ class ShortUserSerializer(BaseUserSerializer):
     """Сериализатор для получения всех рецептов без списка рецептов"""
     is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
-    full_name = serializers.SerializerMethodField()  # 🔹 добавляем
 
     class Meta:
         model = User
@@ -54,7 +53,6 @@ class ShortUserSerializer(BaseUserSerializer):
             "email",
             "is_subscribed",
             "avatar",
-            "full_name",
         )
 
     def get_is_subscribed(self, obj):
