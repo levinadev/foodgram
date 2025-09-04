@@ -1,40 +1,83 @@
 # Foodgram
 
-Веб-приложение для публикации рецептов.  
-Пользователи могут создавать и редактировать рецепты, добавлять их в избранное и формировать список покупок.  
+**Foodgram** — это онлайн-сервис для публикации рецептов.
 
 ## Возможности
 - Регистрация и авторизация пользователей  
+- Смена пароля и загрузка аватара пользователя
 - Создание, редактирование и удаление рецептов  
 - Добавление рецептов в избранное
+- Подписка на других пользователей
 - Фильтрация рецептов по тегам
-- Формирование списка покупок
+- Формирование списка покупок 
+- Подсчет ингредиентов
 
-## Установка и запуск
+## Деплой
 
-1. Клонирование репозитория:
+- Проект развернут на сайте: http://89.169.188.80:8000
+- Административная панель: http://89.169.188.80:8000/admin/
+
+- Данные для входа:
+```
+admin@mail.com
+wBkyisAt
+```
+
+## Примеры использования API:
+
+- Регистрация: http://89.169.188.80:8000/signup
+- Авторизация: http://89.169.188.80:8000/signin
+- Страница с рецептами: http://89.169.188.80:8000/recipes
+- Создать рецепт: http://89.169.188.80:8000/recipes/create
+- Текущий профиль: http://89.169.188.80:8000/user/me
+- Профиля администратора: http://89.169.188.80:8000/user/1
+- Смена пароля: http://89.169.188.80:8000/change-password
+- Избранные рецепты: http://89.169.188.80:8000/favorites
+- Список подписок: http://89.169.188.80:8000/subscriptions
+- Список покупок: http://89.169.188.80:8000/cart
+
+## Установка и запуск локально
+
+1. Клонировать репозитория:
 
 ```
 git clone https://github.com/levinadev/foodgram.git
+cd foodgram
 ```
 
-3. Запуск контейнеров:
+2. Создать файл `.env` в корне проекта с таким содержимым:
+```
+POSTGRES_DB=foodgram
+POSTGRES_USER=foodgram_user
+POSTGRES_PASSWORD=foodgram_password
+DB_HOST=db
+DB_PORT=5432
+DJANGO_SECRET_KEY='django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo'
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=89.169.188.80,foodgramanna.ddns.net,91.200.151.93,localhost,127.0.0.1
+FRONTEND_URL='http://localhost'
+```
+
+3. Запуск:
 
 ```
 docker-compose -f docker-compose.production.yml up -d
 ```
 
-4. Остановка контейнеров:
+4. После этого проект будет доступен по адресу: http://127.0.0.1:8000/
+
+5. Остановка контейнеров:
 
 ```
 docker-compose -f docker-compose.production.yml down
 ```
 
 ## Технологии
-- Python 3, Django, DRF  
-- PostgreSQL  
-- Docker, Docker Compose  
-- Nginx, Gunicorn
+- **Backend:** Python 3, Django, Django REST Framework, Djoser  
+- **Database:** PostgreSQL  
+- **Frontend:** React (сборка)  
+- **Web-server:** Nginx, Gunicorn  
+- **Инфраструктура:** Docker, Docker Compose  
 
 ## Автор
 
