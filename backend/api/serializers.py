@@ -242,6 +242,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 "tags": "Нельзя создать рецепт без тегов."
             })
 
+        tag_ids = [tag.id for tag in tags]
+        if len(tag_ids) != len(set(tag_ids)):
+            raise serializers.ValidationError({
+                "tags": "Теги не должны повторяться."
+            })
+
         return data
 
     def create(self, validated_data):
