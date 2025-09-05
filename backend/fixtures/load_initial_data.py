@@ -4,11 +4,11 @@ import sys
 
 import django
 
+from recipes.models import Ingredient
+
 sys.path.append("/app")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "foodgram_backend.settings")
 django.setup()
-
-from recipes.models import Ingredient
 
 file_path = "/app/fixtures/ingredients.json"
 
