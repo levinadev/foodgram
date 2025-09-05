@@ -222,6 +222,19 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 "ingredients": "Нельзя создать рецепт без ингредиентов."
             })
+
+        ingredient_ids = [item["id"] for item in ingredients]
+        if len(ingredient_ids) != len(set(ingredient_ids)):
+            raise serializers.ValidationError({
+                "ingredients": "Ингредиенты не должны повторяться."
+            })
+
+        for ingredient in ingredients:
+            if ingredient["amount"] < 1:
+                raise serializers.ValidationError({
+                    "ingredients": "Количество ингредиента должно быть больше 0."
+                })
+
         return data
 
     def create(self, validated_data):
