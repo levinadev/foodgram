@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
@@ -100,6 +101,11 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
     first_name = serializers.CharField(required=True, max_length=150)
     last_name = serializers.CharField(required=True, max_length=150)
+    username = serializers.CharField(
+        required=True,
+        max_length=150,
+        validators=[UnicodeUsernameValidator()]
+    )
 
     class Meta(BaseUserCreateSerializer.Meta):
         model = User
