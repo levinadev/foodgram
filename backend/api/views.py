@@ -34,7 +34,20 @@ from users.models import (
     Subscription, User
 )
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import BaseUserSerializer
+
 logger = logging.getLogger(__name__)
+
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = BaseUserSerializer(request.user, context={"request": request})
+        return Response(serializer.data)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

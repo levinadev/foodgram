@@ -2,7 +2,7 @@ from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from .views import (
     IngredientViewSet, TagViewSet, RecipeViewSet,
-    AvatarView, SubscriptionsView
+    AvatarView, SubscriptionsView, MeView
 )
 
 router = DefaultRouter()
@@ -20,6 +20,7 @@ urlpatterns = [
         SubscriptionsView.as_view(),
         name="user-all-subscriptions"
     ),
+    path("users/me/", MeView.as_view(), name="user-me"),
     path('', include('djoser.urls')),
     path(
         "users/me/avatar/",
