@@ -219,6 +219,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = data.get("ingredients")
         tags = data.get("tags")
+        image = data.get("image")
 
         if not ingredients:
             raise serializers.ValidationError({
@@ -246,6 +247,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if len(tag_ids) != len(set(tag_ids)):
             raise serializers.ValidationError({
                 "tags": "Теги не должны повторяться."
+            })
+
+        if not image:
+            raise serializers.ValidationError({
+                "image": "Картинка обязательна для рецепта."
             })
 
         return data
