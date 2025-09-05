@@ -5,39 +5,40 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-
-from rest_framework import permissions, status, viewsets, generics
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.response import Response
-
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from recipes.filters import RecipeFilter
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
+from users.models import Subscription, User
 
 from .permissions import IsAuthorAndAuthenticatedOrReadOnly
 from .serializers import (
+    AvatarSerializer,
+    BaseUserSerializer,
+    IngredientSerializer,
+    RecipeCreateSerializer,
+    RecipeSerializer,
+    ShortRecipeSerializer,
+    TagSerializer,
     UserSerializer,
-    TagSerializer, RecipeSerializer,
-    ShortRecipeSerializer, RecipeCreateSerializer,
-    AvatarSerializer, IngredientSerializer
 )
-
-from recipes.filters import RecipeFilter
-
-from recipes.models import (
-    Favorite,Recipe, RecipeIngredient,
-    ShoppingCart, Ingredient, Tag
-)
-
-from users.models import (
-    Subscription, User
-)
-
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .serializers import BaseUserSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,9 @@ class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = BaseUserSerializer(request.user, context={"request": request})
+        serializer = BaseUserSerializer(
+            request.user, context={"request": request}
+        )
         return Response(serializer.data)
 
 
@@ -59,7 +62,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ["create", "update", "partial_update"]:
             return RecipeCreateSerializer
         return RecipeSerializer
 
@@ -68,7 +71,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         user = self.request.user
         if user.is_authenticated:
-            tags = self.request.query_params.getlist('tags')
+            tags = self.request.query_params.getlist("tags")
             if tags:
                 qs = qs.filter(tags__slug__in=tags).distinct()
 
@@ -94,26 +97,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if request.method == "POST":
             obj, created = Favorite.objects.get_or_create(
-                user=request.user,
-                recipe=recipe
+                user=request.user, recipe=recipe
             )
             if not created:
                 return Response(
                     {"errors": "Уже в избранном"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer = ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
             deleted, _ = Favorite.objects.filter(
-                user=request.user,
-                recipe=recipe
+                user=request.user, recipe=recipe
             ).delete()
             if not deleted:
                 return Response(
                     {"errors": "Рецепт не был в избранном"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -128,7 +129,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if not created:
                 return Response(
                     {"errors": "Уже в списке покупок"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer = ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -140,15 +141,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if not deleted:
                 return Response(
                     {"errors": "Рецепта не было в списке покупок"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=["get"], url_path="download_shopping_cart")
     def download_shopping_cart(self, request):
         ingredients = (
-            RecipeIngredient.objects
-            .filter(recipe__in_shopping_cart__user=request.user)
+            RecipeIngredient.objects.filter(
+                recipe__in_shopping_cart__user=request.user
+            )
             .values("ingredient__name", "ingredient__measurement_unit")
             .annotate(total_amount=Sum("amount"))
             .order_by("ingredient__name")
@@ -174,6 +176,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet для ингредиентов"""
+
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [AllowAny]
@@ -215,7 +218,7 @@ class SubscriptionsView(generics.GenericAPIView):
     def get_queryset(self):
         user = self.request.user
         author_ids = Subscription.objects.filter(user=user).values_list(
-            'author_id', flat=True
+            "author_id", flat=True
         )
         return User.objects.filter(id__in=author_ids)
 
@@ -236,13 +239,15 @@ class SubscriptionsView(generics.GenericAPIView):
         if request.user == author:
             return Response(
                 {"errors": "Нельзя подписаться на самого себя"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if Subscription.objects.filter(user=request.user, author=author).exists():
+        if Subscription.objects.filter(
+            user=request.user, author=author
+        ).exists():
             return Response(
                 {"errors": "Вы уже подписаны на этого пользователя"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         Subscription.objects.create(user=request.user, author=author)
@@ -253,12 +258,11 @@ class SubscriptionsView(generics.GenericAPIView):
         """Отписка от пользователя"""
         author = get_object_or_404(User, id=id)
         deleted, _ = Subscription.objects.filter(
-            user=request.user,
-            author=author
+            user=request.user, author=author
         ).delete()
         if not deleted:
             return Response(
                 {"errors": "Вы не были подписаны"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(status=status.HTTP_204_NO_CONTENT)

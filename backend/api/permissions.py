@@ -1,11 +1,13 @@
 from rest_framework import permissions
 
+
 class IsAuthorAndAuthenticatedOrReadOnly(permissions.BasePermission):
     """
     - Любой может читать.
     - Только авторизованный может создавать.
     - Изменять/удалять может только автор.
     """
+
     def has_permission(self, request, view):
         # безопасные методы доступны всем
         if request.method in permissions.SAFE_METHODS:
