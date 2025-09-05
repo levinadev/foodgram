@@ -81,7 +81,12 @@ class UserSerializer(BaseUserSerializer):
         fields = BaseUserSerializer.Meta.fields + ("recipes", "recipes_count",)
 
     def get_recipes(self, obj):
-        recipes = obj.recipes.all()[:3]
+        request = self.context.get("request")
+        recipes_qs = obj.recipes.all()
+        if request:
+            limit = request.query_params.get("recipes_limit")
+            if limit and limit.isdigit():
+                recipes_qs = recipes_qs[:int(limit)]
         return [
             {
                 "id": r.id,
@@ -89,7 +94,7 @@ class UserSerializer(BaseUserSerializer):
                 "image": r.image.url if r.image else None,
                 "cooking_time": r.cooking_time
             }
-            for r in recipes
+            for r in recipes_qs
         ]
 
     def get_recipes_count(self, obj):
