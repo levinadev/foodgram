@@ -212,9 +212,20 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = [
-            "ingredients", "tags", "image",
-            "name", "text", "cooking_time"
+            "ingredients",
+            "tags",
+            "image",
+            "name",
+            "text",
+            "cooking_time",
         ]
+
+    def validate_cooking_time(self, value):
+        if value < 1:
+            raise serializers.ValidationError(
+                "Время приготовления должно быть больше 0 минут."
+            )
+        return value
 
     def validate(self, data):
         ingredients = data.get("ingredients")
