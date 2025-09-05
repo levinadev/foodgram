@@ -12,8 +12,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 
-from .permissions import IsAuthorOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import PermissionDenied
 
+from .permissions import IsAuthorAndAuthenticatedOrReadOnly
 from .serializers import (
     UserSerializer,
     TagSerializer, RecipeSerializer,
@@ -38,7 +40,7 @@ logger = logging.getLogger(__name__)
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [IsAuthorAndAuthenticatedOrReadOnly]
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
@@ -63,6 +65,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("Необходимо войти в систему")
         serializer.save(author=self.request.user)
 
     @action(detail=True, methods=["get"], url_path="get-link")
