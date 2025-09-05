@@ -1,7 +1,14 @@
 from django.contrib import admin
 from django.db.models import Count
 
-from .models import Favorite, Recipe, RecipeIngredient, ShoppingCart
+from .models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -19,6 +26,14 @@ class RecipeAdmin(admin.ModelAdmin):
         return queryset.annotate(favorite_count=Count("favorites"))
 
 
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ("name", "measurement_unit")
+
+    search_fields = ("name",)
+
+
+admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(Tag)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(RecipeIngredient)
 admin.site.register(Favorite)

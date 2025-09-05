@@ -1,4 +1,5 @@
 services:
+
   db:
     image: postgres:14
     container_name: foodgram-db
@@ -19,11 +20,15 @@ services:
     command: >
       sh -c "until pg_isready -h db -p 5432; do sleep 1; done &&
              python manage.py migrate &&
+             python manage.py loaddata fixtures/superuser.json &&
+             python manage.py loaddata fixtures/tags.json &&
+             python manage.py shell -c \"exec(open('fixtures/load_initial_data.py').read())\" &&
              python manage.py collectstatic --noinput &&
              gunicorn foodgram_backend.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - media_volume:/app/media
       - static_volume:/app/static
+      - fixtures_volume:/app/fixtures
     depends_on:
       - db
     env_file:
@@ -35,8 +40,8 @@ services:
       POSTGRES_PASSWORD: foodgram_password
       DB_HOST: db
       DB_PORT: 5432
-      DJANGO_SUPERUSER_USERNAME: admin
-      DJANGO_SUPERUSER_EMAIL: admin@mail.com
+      DJANGO_SUPERUSER_USERNAME: superuser
+      DJANGO_SUPERUSER_EMAIL: superuser@mail.com
       DJANGO_SUPERUSER_PASSWORD: wBkyisAt
 
     healthcheck:
@@ -68,3 +73,4 @@ volumes:
   pg_data_production:
   static_volume:
   media_volume:
+  fixtures_volume:

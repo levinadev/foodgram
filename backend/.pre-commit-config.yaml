@@ -1,0 +1,31 @@
+exclude: '(^backend/\.venv/|^backend/recipes/migrations/|^backend/users/migrations/|^backend/media/|^backend/static/|backend/pyproject\.toml$|backend/README\.md$|backend/requirements\.txt$|backend/uv\.lock$)'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        files: ^backend/
+      - id: end-of-file-fixer
+        files: ^backend/
+      - id: check-merge-conflict
+        files: ^backend/
+      - id: debug-statements
+        files: ^backend/
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        files: ^backend/
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        files: ^backend/
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        files: ^backend/
