@@ -12,6 +12,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 
+from .permissions import IsAuthorOrReadOnly
+
 from .serializers import (
     UserSerializer,
     TagSerializer, RecipeSerializer,
@@ -36,7 +38,7 @@ logger = logging.getLogger(__name__)
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
@@ -213,7 +215,20 @@ class SubscriptionsView(generics.GenericAPIView):
     def post(self, request, id, *args, **kwargs):
         """Подписка на пользователя"""
         author = get_object_or_404(User, id=id)
-        Subscription.objects.get_or_create(user=request.user, author=author)
+
+        if request.user == author:
+            return Response(
+                {"errors": "Нельзя подписаться на самого себя"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if Subscription.objects.filter(user=request.user, author=author).exists():
+            return Response(
+                {"errors": "Вы уже подписаны на этого пользователя"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        Subscription.objects.create(user=request.user, author=author)
         serializer = UserSerializer(author, context={"request": request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -224,7 +239,9 @@ class SubscriptionsView(generics.GenericAPIView):
             user=request.user,
             author=author
         ).delete()
-        if deleted == 0:
-            return Response({"detail": "Вы не были подписаны"}, status=400)
-        serializer = UserSerializer(author, context={"request": request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if not deleted:
+            return Response(
+                {"errors": "Вы не были подписаны"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)
