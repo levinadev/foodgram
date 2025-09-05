@@ -270,7 +270,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             if ingredient["amount"] < 1:
                 raise serializers.ValidationError(
                     {
-                        "ingredients": "Количество ингредиента должно быть больше 0."
+                        "ingredients": (
+                            "Количество ингредиента должно быть " "больше 0."
+                        )
                     }
                 )
 
