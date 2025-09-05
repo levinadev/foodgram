@@ -13,9 +13,9 @@ DB_PORT = os.getenv("DB_PORT", "5432")
 DJANGO_SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-secret")
 DJANGO_DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 DJANGO_ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv(
-        "DJANGO_ALLOWED_HOSTS", ""
-    ).split(",") if h.strip()
+    h.strip()
+    for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if h.strip()
 ]
 
 # URL фронтенда (куда ведут короткие ссылки)
