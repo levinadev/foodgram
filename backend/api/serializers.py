@@ -211,6 +211,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             "name", "text", "cooking_time"
         ]
 
+    def validate(self, data):
+        ingredients = data.get("ingredients")
+        if not ingredients:
+            raise serializers.ValidationError({
+                "ingredients": "Нельзя создать рецепт без ингредиентов."
+            })
+        return data
+
     def create(self, validated_data):
         ingredients_data = validated_data.pop("ingredients")
         tags = validated_data.pop("tags")
