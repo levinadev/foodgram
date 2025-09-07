@@ -254,7 +254,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_image(self, value):
-        """Проверка: картинка обязательна при создании, недопустимы пустые значения."""
+        """Проверка добавления картинки."""
         if self.instance is None and not value:
             raise serializers.ValidationError(
                 "Картинка обязательна для рецепта."
