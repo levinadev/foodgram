@@ -19,6 +19,7 @@ from recipes.models import (
 from users.models import Subscription, User
 
 from .constants import (
+    MAX_INGREDIENT_AMOUNT,
     MAX_NAME_LENGTH,
     MAX_USERNAME_LENGTH,
     MIN_COOKING_TIME,
@@ -202,7 +203,11 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     def validate_amount(self, value):
         if value < MIN_INGREDIENT_AMOUNT:
             raise serializers.ValidationError(
-                "Количество ингредиента должно быть больше 0."
+                f"Количество должно быть не меньше {MIN_INGREDIENT_AMOUNT}."
+            )
+        if value > MAX_INGREDIENT_AMOUNT:
+            raise serializers.ValidationError(
+                f"Количество не может превышать {MAX_INGREDIENT_AMOUNT}."
             )
         return value
 
