@@ -87,23 +87,19 @@ class UserSerializer(BaseUserSerializer):
         fields = BaseUserSerializer.Meta.fields + ("recipes", "recipes_count")
 
     def get_recipes(self, obj):
+        """Отдает список рецептов пользователя."""
         request = self.context.get("request")
         recipes_qs = obj.recipes.all()
         if request:
             limit = request.query_params.get("recipes_limit")
             if limit and limit.isdigit():
                 recipes_qs = recipes_qs[: int(limit)]
-        return [
-            {
-                "id": r.id,
-                "name": r.name,
-                "image": r.image.url,
-                "cooking_time": r.cooking_time,
-            }
-            for r in recipes_qs
-        ]
+        return ShortRecipeSerializer(
+            recipes_qs, many=True, context=self.context
+        ).data
 
     def get_recipes_count(self, obj):
+        """Количество рецептов пользователя."""
         return obj.recipes.count()
 
 
@@ -182,7 +178,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         """True, если рецепт в избранном у пользователя."""
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        if not user or user.is_anonymous:
+        if not user or not user.is_authenticated:
             return False
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
@@ -190,7 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         """True, если рецепт в корзине у пользователя."""
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        if not user or user.is_anonymous:
+        if not user or not user.is_authenticated:
             return False
         return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
 
