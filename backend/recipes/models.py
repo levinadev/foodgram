@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Ingredient(models.Model):
-    """Модель ингредиента"""
+    """Модель ингредиента."""
 
     name = models.CharField(
         max_length=128,
@@ -19,7 +19,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """Модель тега для поиска данных"""
+    """Модель тега для поиска данных."""
 
     name = models.CharField(
         max_length=32, unique=True, help_text="Название тега"
@@ -36,7 +36,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    """Модель рецепта"""
+    """Модель рецепта."""
 
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -65,7 +65,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    """Модель количества ингредиента в рецепте"""
+    """Модель количества ингредиента в рецепте."""
 
     recipe = models.ForeignKey(
         Recipe,
@@ -84,7 +84,7 @@ class RecipeIngredient(models.Model):
 
 
 class Favorite(models.Model):
-    """Модель избранного рецепта"""
+    """Модель избранного рецепта."""
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -103,7 +103,7 @@ class Favorite(models.Model):
 
 
 class ShoppingCart(models.Model):
-    """Модель корзины"""
+    """Модель корзины."""
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -174,7 +174,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet для ингредиентов"""
+    """ViewSet для ингредиентов."""
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
@@ -204,7 +204,7 @@ class AvatarView(generics.UpdateAPIView):
         return self.request.user
 
     def delete(self, request, *args, **kwargs):
-        """Удалить аватар"""
+        """Удалить аватар."""
         user = self.get_object()
         user.avatar.delete(save=True)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -222,7 +222,7 @@ class SubscriptionsView(generics.GenericAPIView):
         return User.objects.filter(id__in=author_ids)
 
     def get(self, request, *args, **kwargs):
-        """Получить список подписок"""
+        """Получить список подписок."""
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -232,7 +232,7 @@ class SubscriptionsView(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, id, *args, **kwargs):
-        """Подписка на пользователя"""
+        """Подписка на пользователя."""
         author = get_object_or_404(User, id=id)
 
         if request.user == author:
@@ -254,7 +254,7 @@ class SubscriptionsView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id, *args, **kwargs):
-        """Отписка от пользователя"""
+        """Отписка от пользователя."""
         author = get_object_or_404(User, id=id)
         deleted, _ = Subscription.objects.filter(
             user=request.user, author=author

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
-    """Базовый сериализатор пользователя"""
+    """Базовый сериализатор пользователя."""
 
     avatar = Base64ImageField(required=False)
     is_subscribed = serializers.SerializerMethodField()
@@ -46,7 +46,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 
 class ShortUserSerializer(BaseUserSerializer):
-    """Сериализатор для получения всех рецептов без списка рецептов"""
+    """Сериализатор для получения всех рецептов без списка рецептов."""
 
     is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
@@ -80,7 +80,7 @@ class ShortUserSerializer(BaseUserSerializer):
 
 
 class UserSerializer(BaseUserSerializer):
-    """Сериализатор для подписок"""
+    """Сериализатор для подписок."""
 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -113,7 +113,7 @@ class UserSerializer(BaseUserSerializer):
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
-    """Сериализатор для создания пользователей"""
+    """Сериализатор для создания пользователей."""
 
     first_name = serializers.CharField(required=True, max_length=150)
     last_name = serializers.CharField(required=True, max_length=150)
@@ -140,7 +140,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор ингредиентов для рецепта"""
+    """Сериализатор ингредиентов для рецепта."""
 
     id = serializers.ReadOnlyField(source="ingredient.id")
     name = serializers.ReadOnlyField(source="ingredient.name")
@@ -154,7 +154,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """Сериализатор для чтения рецепта"""
+    """Сериализатор для чтения рецепта."""
 
     ingredients = RecipeIngredientSerializer(
         source="recipeingredient_set", many=True
@@ -181,7 +181,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
 
     def get_is_favorited(self, obj):
-        """True, если рецепт в избранном у пользователя"""
+        """True, если рецепт в избранном у пользователя."""
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if not user or user.is_anonymous:
@@ -189,7 +189,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        """True, если рецепт в корзине у пользователя"""
+        """True, если рецепт в корзине у пользователя."""
         request = self.context.get("request")
         user = getattr(request, "user", None)
         if not user or user.is_anonymous:
@@ -198,7 +198,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
-    """Сериализатор для ингредиентов при создании рецепта"""
+    """Сериализатор для ингредиентов при создании рецепта."""
 
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
@@ -216,7 +216,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
-    """Короткий сериализатор для избранного/корзины"""
+    """Короткий сериализатор для избранного/корзины."""
 
     class Meta:
         model = Recipe
@@ -224,7 +224,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
-    """Сериализатор для создания/обновления рецепта"""
+    """Сериализатор для создания/обновления рецепта."""
 
     ingredients = RecipeIngredientWriteSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
@@ -337,7 +337,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        """После создания/обновления возвращаем нормальный RecipeSerializer"""
+        """После создания/обновления возвращаем нормальный RecipeSerializer."""
         return RecipeSerializer(instance, context=self.context).data
 
 

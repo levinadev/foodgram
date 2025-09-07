@@ -3,7 +3,7 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    """Менеджер пользователей с авторизацией по email"""
+    """Менеджер пользователей с авторизацией по email."""
 
     use_in_migrations = True
 
@@ -36,7 +36,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    """Кастомная модель пользователя с логином по email"""
+    """Кастомная модель пользователя с логином по email."""
 
     username = models.CharField(
         max_length=150,
@@ -62,7 +62,7 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-    """Модель подписки пользователя на автора"""
+    """Модель подписки пользователя на автора."""
 
     user = models.ForeignKey(
         User,
