@@ -232,7 +232,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
-    image = Base64ImageField()
+    image = Base64ImageField(required=True)
     cooking_time = serializers.IntegerField(
         min_value=MIN_COOKING_TIME,
         max_value=MAX_COOKING_TIME,
@@ -253,10 +253,21 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             "cooking_time",
         ]
 
+    def validate_image(self, value):
+        """Проверка: картинка обязательна при создании, недопустимы пустые значения."""
+        if self.instance is None and not value:
+            raise serializers.ValidationError(
+                "Картинка обязательна для рецепта."
+            )
+        if value in ("", None):
+            raise serializers.ValidationError(
+                "Поле image не может быть пустым."
+            )
+        return value
+
     def validate(self, data):
         ingredients = data.get("ingredients")
         tags = data.get("tags")
-        image = data.get("image")
 
         if not ingredients:
             raise serializers.ValidationError(
@@ -278,11 +289,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if len(tag_ids) != len(set(tag_ids)):
             raise serializers.ValidationError(
                 {"tags": "Теги не должны повторяться."}
-            )
-
-        if not image:
-            raise serializers.ValidationError(
-                {"image": "Картинка обязательна для рецепта."}
             )
 
         return data
