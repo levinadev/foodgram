@@ -11,6 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,7 +28,7 @@ from recipes.models import (
 )
 from users.models import Subscription, User
 
-from .permissions import IsAuthorAndAuthenticatedOrReadOnly
+from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     AvatarSerializer,
     BaseUserSerializer,
@@ -55,7 +56,7 @@ class MeView(APIView):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [IsAuthorAndAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
