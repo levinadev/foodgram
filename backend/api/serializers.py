@@ -48,11 +48,10 @@ class BaseUserSerializer(DjoserUserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
-        if not request or request.user.is_anonymous:
+        user = getattr(request, "user", None)
+        if not user or not user.is_authenticated:
             return False
-        return Subscription.objects.filter(
-            user=request.user, author=obj
-        ).exists()
+        return Subscription.objects.filter(user=user, author=obj).exists()
 
 
 class ShortUserSerializer(BaseUserSerializer):
