@@ -200,6 +200,10 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
 
+    class Meta:
+        model = RecipeIngredient
+        fields = ("id", "amount")
+
     def validate_amount(self, value):
         if value < MIN_INGREDIENT_AMOUNT:
             raise serializers.ValidationError(
@@ -210,10 +214,6 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
                 f"Количество не может превышать {MAX_INGREDIENT_AMOUNT}."
             )
         return value
-
-    class Meta:
-        model = RecipeIngredient
-        fields = ("id", "amount")
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
