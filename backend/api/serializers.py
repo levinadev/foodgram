@@ -293,18 +293,22 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         return data
 
-    def create(self, validated_data):
-        ingredients_data = validated_data.pop("ingredients")
-        tags = validated_data.pop("tags")
-        recipe = Recipe.objects.create(**validated_data)
-        recipe.tags.set(tags)
-
+    def _create_ingredients(self, recipe, ingredients_data):
+        """Метод для добавления ингредиентов к рецепту."""
         for ingredient in ingredients_data:
             RecipeIngredient.objects.create(
                 recipe=recipe,
                 ingredient=ingredient["id"],
                 amount=ingredient["amount"],
             )
+
+    def create(self, validated_data):
+        ingredients_data = validated_data.pop("ingredients")
+        tags = validated_data.pop("tags")
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.tags.set(tags)
+
+        self._create_ingredients(recipe, ingredients_data)
         return recipe
 
     def update(self, instance, validated_data):
@@ -323,12 +327,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.tags.set(tags)
 
         instance.recipeingredient_set.all().delete()
-        for ingredient in ingredients_data:
-            RecipeIngredient.objects.create(
-                recipe=instance,
-                ingredient=ingredient["id"],
-                amount=ingredient["amount"],
-            )
+        self._create_ingredients(instance, ingredients_data)
 
         return instance
 
