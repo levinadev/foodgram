@@ -19,6 +19,7 @@ from recipes.models import (
 from users.models import Subscription, User
 
 from .constants import (
+    MAX_COOKING_TIME,
     MAX_INGREDIENT_AMOUNT,
     MAX_NAME_LENGTH,
     MAX_USERNAME_LENGTH,
@@ -232,6 +233,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(), many=True
     )
     image = Base64ImageField()
+    cooking_time = serializers.IntegerField(
+        min_value=MIN_COOKING_TIME,
+        max_value=MAX_COOKING_TIME,
+        error_messages={
+            "min_value": f"Время приготовления должно быть не меньше {MIN_COOKING_TIME} мин.",
+            "max_value": f"Время приготовления не может превышать {MAX_COOKING_TIME} мин.",
+        },
+    )
 
     class Meta:
         model = Recipe
@@ -243,13 +252,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         ]
-
-    def validate_cooking_time(self, value):
-        if value < MIN_COOKING_TIME:
-            raise serializers.ValidationError(
-                "Время приготовления должно быть больше 0 минут."
-            )
-        return value
 
     def validate(self, data):
         ingredients = data.get("ingredients")
@@ -266,16 +268,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"ingredients": "Ингредиенты не должны повторяться."}
             )
-
-        for ingredient in ingredients:
-            if ingredient["amount"] < MIN_INGREDIENT_AMOUNT:
-                raise serializers.ValidationError(
-                    {
-                        "ingredients": (
-                            "Количество ингредиента должно быть " "больше 0."
-                        )
-                    }
-                )
 
         if not tags:
             raise serializers.ValidationError(
