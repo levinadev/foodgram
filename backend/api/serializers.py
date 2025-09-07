@@ -97,7 +97,7 @@ class UserSerializer(BaseUserSerializer):
             {
                 "id": r.id,
                 "name": r.name,
-                "image": r.image.url if r.image else None,
+                "image": r.image.url,
                 "cooking_time": r.cooking_time,
             }
             for r in recipes_qs
