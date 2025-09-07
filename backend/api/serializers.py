@@ -295,12 +295,15 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def _create_ingredients(self, recipe, ingredients_data):
         """Метод для добавления ингредиентов к рецепту."""
-        for ingredient in ingredients_data:
-            RecipeIngredient.objects.create(
+        recipe_ingredients = [
+            RecipeIngredient(
                 recipe=recipe,
                 ingredient=ingredient["id"],
                 amount=ingredient["amount"],
             )
+            for ingredient in ingredients_data
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop("ingredients")
