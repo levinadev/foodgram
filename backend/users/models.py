@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
+from api.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
+
 
 class UserManager(BaseUserManager):
     """Менеджер пользователей с авторизацией по email."""
@@ -39,14 +41,14 @@ class User(AbstractUser):
     """Кастомная модель пользователя с логином по email."""
 
     username = models.CharField(
-        max_length=150,
+        max_length=MAX_USERNAME_LENGTH,
         unique=True,
         blank=True,
         null=True,
         help_text="Имя пользователя",
     )
     email = models.EmailField(
-        unique=True, max_length=254, help_text="Электронная почта"
+        unique=True, max_length=MAX_EMAIL_LENGTH, help_text="Электронная почта"
     )
     avatar = models.ImageField(
         upload_to="users/", blank=True, null=True, help_text="Аватар"

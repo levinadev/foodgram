@@ -1,16 +1,24 @@
 from django.conf import settings
 from django.db import models
 
+from api.constants import (
+    MAX_INGREDIENT_NAME_LENGTH,
+    MAX_MEASUREMENT_UNIT_LENGTH,
+    MAX_RECIPE_NAME_LENGTH,
+    MAX_TAG_NAME_LENGTH,
+    MAX_TAG_SLUG_LENGTH,
+)
+
 
 class Ingredient(models.Model):
     """Модель ингредиента."""
 
     name = models.CharField(
-        max_length=128,
+        max_length=MAX_INGREDIENT_NAME_LENGTH,
         help_text="Название ингредиента, например: 'Сахар', 'Молоко'",
     )
     measurement_unit = models.CharField(
-        max_length=32,
+        max_length=MAX_MEASUREMENT_UNIT_LENGTH,
         help_text="Единица измерения ингредиента, например: 'г', 'мл'",
     )
 
@@ -22,9 +30,11 @@ class Tag(models.Model):
     """Модель тега для поиска данных."""
 
     name = models.CharField(
-        max_length=32, unique=True, help_text="Название тега"
+        max_length=MAX_TAG_NAME_LENGTH, unique=True, help_text="Название тега"
     )
-    slug = models.SlugField(max_length=32, unique=True, help_text="slug тега")
+    slug = models.SlugField(
+        max_length=MAX_TAG_SLUG_LENGTH, unique=True, help_text="slug тега"
+    )
 
     objects = models.Manager()
 
@@ -44,7 +54,9 @@ class Recipe(models.Model):
         related_name="recipes",
         help_text="Пользователь, который создал рецепт",
     )
-    name = models.CharField(max_length=200, help_text="Название рецепта")
+    name = models.CharField(
+        max_length=MAX_RECIPE_NAME_LENGTH, help_text="Название рецепта"
+    )
     image = models.ImageField(upload_to="recipes/", help_text="Фото блюда")
     text = models.TextField(help_text="Описание рецепта")
     ingredients = models.ManyToManyField(

@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from api.constants import DEFAULT_PAGE_SIZE
 from config import (
     DB_HOST,
     DB_PORT,
@@ -126,7 +127,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ],
     "DEFAULT_PAGINATION_CLASS": "api.pagination.LimitPageNumberPagination",
-    "PAGE_SIZE": 6,
+    "PAGE_SIZE": DEFAULT_PAGE_SIZE,
 }
 
 DJOSER = {

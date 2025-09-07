@@ -15,6 +15,13 @@ from recipes.models import (
 )
 from users.models import Subscription, User
 
+from .constants import (
+    MAX_NAME_LENGTH,
+    MAX_USERNAME_LENGTH,
+    MIN_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -115,10 +122,16 @@ class UserSerializer(BaseUserSerializer):
 class UserCreateSerializer(BaseUserCreateSerializer):
     """Сериализатор для создания пользователей."""
 
-    first_name = serializers.CharField(required=True, max_length=150)
-    last_name = serializers.CharField(required=True, max_length=150)
+    first_name = serializers.CharField(
+        required=True, max_length=MAX_NAME_LENGTH
+    )
+    last_name = serializers.CharField(
+        required=True, max_length=MAX_NAME_LENGTH
+    )
     username = serializers.CharField(
-        required=True, max_length=150, validators=[UnicodeUsernameValidator()]
+        required=True,
+        max_length=MAX_USERNAME_LENGTH,
+        validators=[UnicodeUsernameValidator()],
     )
 
     class Meta(BaseUserCreateSerializer.Meta):
@@ -204,7 +217,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     def validate_amount(self, value):
-        if value < 1:
+        if value < MIN_INGREDIENT_AMOUNT:
             raise serializers.ValidationError(
                 "Количество ингредиента должно быть больше 0."
             )
@@ -244,7 +257,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_cooking_time(self, value):
-        if value < 1:
+        if value < MIN_COOKING_TIME:
             raise serializers.ValidationError(
                 "Время приготовления должно быть больше 0 минут."
             )
@@ -267,7 +280,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
 
         for ingredient in ingredients:
-            if ingredient["amount"] < 1:
+            if ingredient["amount"] < MIN_INGREDIENT_AMOUNT:
                 raise serializers.ValidationError(
                     {
                         "ingredients": (
@@ -300,7 +313,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
 
-        # создаем ингредиенты
         for ingredient in ingredients_data:
             RecipeIngredient.objects.create(
                 recipe=recipe,
@@ -322,10 +334,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             instance.image = validated_data["image"]
         instance.save()
 
-        # обновляем теги
         instance.tags.set(tags)
 
-        # обновляем ингредиенты
         instance.recipeingredient_set.all().delete()
         for ingredient in ingredients_data:
             RecipeIngredient.objects.create(
