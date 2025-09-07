@@ -254,7 +254,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_image(self, value):
-        """Проверка добавления картинки."""
         if self.instance is None and not value:
             raise serializers.ValidationError(
                 "Картинка обязательна для рецепта."
@@ -294,7 +293,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return data
 
     def _create_ingredients(self, recipe, ingredients_data):
-        """Метод для добавления ингредиентов к рецепту."""
         recipe_ingredients = [
             RecipeIngredient(
                 recipe=recipe,
@@ -315,22 +313,17 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop("ingredients")
-        tags = validated_data.pop("tags")
+        ingredients_data = validated_data.pop("ingredients", None)
+        tags = validated_data.pop("tags", None)
 
-        instance.name = validated_data.get("name", instance.name)
-        instance.text = validated_data.get("text", instance.text)
-        instance.cooking_time = validated_data.get(
-            "cooking_time", instance.cooking_time
-        )
-        if "image" in validated_data:
-            instance.image = validated_data["image"]
-        instance.save()
+        instance = super().update(instance, validated_data)
 
-        instance.tags.set(tags)
+        if tags is not None:
+            instance.tags.set(tags)
 
-        instance.recipeingredient_set.all().delete()
-        self._create_ingredients(instance, ingredients_data)
+        if ingredients_data is not None:
+            instance.recipeingredient_set.all().delete()
+            self._create_ingredients(instance, ingredients_data)
 
         return instance
 
