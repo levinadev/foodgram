@@ -1,7 +1,10 @@
 import logging
 
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
+from djoser.serializers import (
+    UserCreateSerializer as DjoserUserCreateSerializer,
+)
+from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -25,13 +28,13 @@ from .constants import (
 logger = logging.getLogger(__name__)
 
 
-class BaseUserSerializer(serializers.ModelSerializer):
+class BaseUserSerializer(DjoserUserSerializer):
     """Базовый сериализатор пользователя."""
 
     avatar = Base64ImageField(required=False)
     is_subscribed = serializers.SerializerMethodField()
 
-    class Meta:
+    class Meta(DjoserUserSerializer.Meta):
         model = User
         fields = (
             "id",
@@ -53,13 +56,11 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 
 class ShortUserSerializer(BaseUserSerializer):
-    """Сериализатор для получения всех рецептов без списка рецептов."""
+    """Короткий сериализатор для вложения автора в рецептах."""
 
-    is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
 
-    class Meta:
-        model = User
+    class Meta(BaseUserSerializer.Meta):
         fields = (
             "id",
             "username",
@@ -70,33 +71,21 @@ class ShortUserSerializer(BaseUserSerializer):
             "avatar",
         )
 
-    def get_is_subscribed(self, obj):
-        user = self.context["request"].user
-        if user.is_anonymous:
-            return False
-        return Subscription.objects.filter(user=user, author=obj).exists()
-
     def get_avatar(self, obj):
-        request = self.context["request"]
+        request = self.context.get("request")
         if obj.avatar:
             return request.build_absolute_uri(obj.avatar.url)
         return None
 
-    def get_full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}".strip()
-
 
 class UserSerializer(BaseUserSerializer):
-    """Сериализатор для подписок."""
+    """Расширенный сериализатор пользователя (профиль / подписки)."""
 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + (
-            "recipes",
-            "recipes_count",
-        )
+        fields = BaseUserSerializer.Meta.fields + ("recipes", "recipes_count")
 
     def get_recipes(self, obj):
         request = self.context.get("request")
@@ -119,8 +108,8 @@ class UserSerializer(BaseUserSerializer):
         return obj.recipes.count()
 
 
-class UserCreateSerializer(BaseUserCreateSerializer):
-    """Сериализатор для создания пользователей."""
+class UserCreateSerializer(DjoserUserCreateSerializer):
+    """Сериализатор для регистрации пользователей (Djoser)."""
 
     first_name = serializers.CharField(
         required=True, max_length=MAX_NAME_LENGTH
@@ -134,15 +123,12 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         validators=[UnicodeUsernameValidator()],
     )
 
-    class Meta(BaseUserCreateSerializer.Meta):
+    class Meta(DjoserUserCreateSerializer.Meta):
         model = User
-        fields = (
-            "id",
-            "email",
-            "username",
+        fields = DjoserUserCreateSerializer.Meta.fields + (
             "first_name",
             "last_name",
-            "password",
+            "username",
         )
 
 

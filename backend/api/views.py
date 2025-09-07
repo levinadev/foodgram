@@ -44,6 +44,8 @@ logger = logging.getLogger(__name__)
 
 
 class MeView(APIView):
+    """Профиль текущего пользователя или 401 для анонимов."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
