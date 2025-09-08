@@ -153,7 +153,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для чтения рецепта."""
 
     ingredients = RecipeIngredientSerializer(
-        source="recipeingredient_set", many=True
+        many=True, read_only=True, source="recipe_ingredients"
     )
     tags = TagSerializer(many=True)
     author = ShortUserSerializer()
@@ -322,7 +322,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             instance.tags.set(tags)
 
         if ingredients_data is not None:
-            instance.recipeingredient_set.all().delete()
+            instance.recipe_ingredients.all().delete()
             self._create_ingredients(instance, ingredients_data)
 
         return instance
