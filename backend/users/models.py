@@ -46,18 +46,30 @@ class User(AbstractUser):
         blank=True,
         null=True,
         help_text="Имя пользователя",
+        verbose_name="Имя пользователя",
     )
     email = models.EmailField(
-        unique=True, max_length=MAX_EMAIL_LENGTH, help_text="Электронная почта"
+        unique=True,
+        max_length=MAX_EMAIL_LENGTH,
+        help_text="Электронная почта",
+        verbose_name="Электронная почта",
     )
     avatar = models.ImageField(
-        upload_to="users/", blank=True, null=True, help_text="Аватар"
+        upload_to="users/",
+        blank=True,
+        null=True,
+        help_text="Аватар",
+        verbose_name="Аватар",
     )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
         return self.email
@@ -71,18 +83,22 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name="subscriptions",
         help_text="Пользователь, который подписывается",
+        verbose_name="Пользователь",
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="subscribers",
         help_text="Автор, на которого подписываются",
+        verbose_name="Автор",
     )
 
     objects = models.Manager()
 
     class Meta:
         unique_together = ("user", "author")
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
 
     def __str__(self):
         return f"{self.user} → {self.author}"
