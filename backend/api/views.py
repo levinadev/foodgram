@@ -36,6 +36,7 @@ from .serializers import (
     RecipeCreateSerializer,
     RecipeSerializer,
     ShortRecipeSerializer,
+    SubscriptionUserSerializer,
     TagSerializer,
     UserSerializer,
 )
@@ -43,36 +44,48 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 
-class UserViewSet(DjoserUserViewSet):
-    """Кастомный UserViewSet на основе Djoser."""
+class UserViewSet(viewsets.GenericViewSet):
+    """Кастомный UserViewSet для пользователей, подписок и аватара."""
 
-    @action(["get"], detail=False, permission_classes=[IsAuthenticated])
-    def me(self, request, *args, **kwargs):
+    queryset = User.objects.all()
+    serializer_class = SubscriptionUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(
+        detail=False, methods=["get"], permission_classes=[IsAuthenticated]
+    )
+    def me(self, request):
         """Профиль текущего пользователя."""
-        serializer = BaseUserSerializer(
+        serializer = SubscriptionUserSerializer(
             request.user, context={"request": request}
         )
         return Response(serializer.data)
 
-    @action(["get"], detail=False, permission_classes=[IsAuthenticated])
-    def subscriptions(self, request, *args, **kwargs):
-        """Список подписок текущего пользователя (с пагинацией)."""
+    @action(
+        detail=False, methods=["get"], permission_classes=[IsAuthenticated]
+    )
+    def subscriptions(self, request):
+        """Список подписок текущего пользователя с пагинацией."""
         author_ids = Subscription.objects.filter(
             user=request.user
         ).values_list("author_id", flat=True)
         queryset = User.objects.filter(id__in=author_ids)
 
         page = self.paginate_queryset(queryset)
-        serializer = UserSerializer(
+        serializer = SubscriptionUserSerializer(
             page or queryset, many=True, context={"request": request}
         )
-        return self.get_paginated_response(serializer.data)
+        if page:
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(
-        ["post", "delete"], detail=True, permission_classes=[IsAuthenticated]
+        detail=True,
+        methods=["post", "delete"],
+        permission_classes=[IsAuthenticated],
     )
-    def subscribe(self, request, pk=None, *args, **kwargs):
-        """Подписка/отписка от пользователя."""
+    def subscribe(self, request, pk=None):
+        """Подписка / отписка на пользователя."""
         author = get_object_or_404(User, pk=pk)
 
         if request.method == "POST":
@@ -89,7 +102,9 @@ class UserViewSet(DjoserUserViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Subscription.objects.create(user=request.user, author=author)
-            serializer = UserSerializer(author, context={"request": request})
+            serializer = SubscriptionUserSerializer(
+                author, context={"request": request}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # DELETE
@@ -104,13 +119,13 @@ class UserViewSet(DjoserUserViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        ["put", "delete"],
         detail=False,
+        methods=["put", "delete"],
         url_path="me/avatar",
         permission_classes=[IsAuthenticated],
     )
-    def avatar(self, request, *args, **kwargs):
-        """Загрузка/удаление аватара."""
+    def avatar(self, request):
+        """Загрузка / удаление аватара."""
         user = request.user
 
         if request.method == "PUT":

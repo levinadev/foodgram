@@ -34,10 +34,10 @@ from .views import (  # AvatarView,; MeView,; SubscriptionsView,
 
 
 router = DefaultRouter()
-router.register(r"recipes", RecipeViewSet, basename="recipes")
-router.register(r"ingredients", IngredientViewSet, basename="ingredients")
-router.register(r"tags", TagViewSet, basename="tags")
-router.register(r"users", UserViewSet, basename="users")
+router.register("recipes", RecipeViewSet, basename="recipes")
+router.register("ingredients", IngredientViewSet, basename="ingredients")
+router.register("tags", TagViewSet, basename="tags")
+router.register("users", UserViewSet, basename="users")
 
 urlpatterns = [
     path("auth/", include("djoser.urls.authtoken")),
