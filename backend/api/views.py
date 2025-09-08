@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from recipes.filters import RecipeFilter
+from api.filters import RecipeFilter
 from recipes.models import (
     Favorite,
     Ingredient,
