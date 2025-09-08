@@ -9,11 +9,9 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import (
-    Favorite,
     Ingredient,
     Recipe,
     RecipeIngredient,
-    ShoppingCart,
     Tag,
 )
 from users.models import Subscription, User
@@ -237,8 +235,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         min_value=MIN_COOKING_TIME,
         max_value=MAX_COOKING_TIME,
         error_messages={
-            "min_value": f"Время приготовления должно быть не меньше {MIN_COOKING_TIME} мин.",
-            "max_value": f"Время приготовления не может превышать {MAX_COOKING_TIME} мин.",
+            "min_value": f"Мин. время: {MIN_COOKING_TIME} мин",
+            "max_value": f"Макс. время: {MAX_COOKING_TIME} мин",
         },
     )
 
