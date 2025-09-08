@@ -112,7 +112,13 @@ class UserViewSet(DjoserUserViewSet):
     def avatar(self, request, *args, **kwargs):
         """Загрузка/удаление аватара."""
         user = request.user
+
         if request.method == "PUT":
+            if "avatar" not in request.data:
+                return Response(
+                    {"errors": "Поле avatar обязательно"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             serializer = AvatarSerializer(
                 user, data=request.data, partial=True
             )
