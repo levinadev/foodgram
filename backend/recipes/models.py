@@ -98,8 +98,6 @@ class Recipe(models.Model):
         Tag, related_name="recipes", help_text="Тег", verbose_name="Теги"
     )
 
-    objects = models.Manager()
-
     class Meta:
         verbose_name = "Рецепт"
         verbose_name_plural = "Рецепты"

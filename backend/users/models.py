@@ -94,8 +94,6 @@ class Subscription(models.Model):
         verbose_name="Автор",
     )
 
-    objects = models.Manager()
-
     class Meta:
         unique_together = ("user", "author")
         verbose_name = "Подписка"
