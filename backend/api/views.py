@@ -236,11 +236,8 @@ class SubscriptionsView(generics.GenericAPIView):
         """Получить список подписок."""
         queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        serializer = self.get_serializer(page or queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def post(self, request, id, *args, **kwargs):
         """Подписка на пользователя."""
