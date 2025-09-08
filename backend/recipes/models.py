@@ -153,6 +153,9 @@ class RecipeIngredient(models.Model):
             )
         ]
 
+    def __str__(self):
+        return f"{self.ingredient.name} — {self.amount} ({self.recipe.name})"
+
 
 class Favorite(models.Model):
     """Модель избранного рецепта."""
@@ -180,6 +183,9 @@ class Favorite(models.Model):
                 fields=["user", "recipe"], name="unique_favorite"
             )
         ]
+
+    def __str__(self):
+        return f"{self.user} ♥ {self.recipe}"
 
 
 class ShoppingCart(models.Model):
