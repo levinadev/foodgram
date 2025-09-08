@@ -6,24 +6,17 @@ from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+)
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.filters import RecipeFilter
-from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (
-    AvatarSerializer,
-    BaseUserSerializer,
-    IngredientSerializer,
-    RecipeCreateSerializer,
-    RecipeSerializer,
-    ShortRecipeSerializer,
-    SubscriptionUserSerializer,
-    TagSerializer,
-)
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -34,50 +27,52 @@ from recipes.models import (
 )
 from users.models import Subscription, User
 
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (
+    AvatarSerializer,
+    BaseUserSerializer,
+    IngredientSerializer,
+    RecipeCreateSerializer,
+    RecipeSerializer,
+    ShortRecipeSerializer,
+    TagSerializer,
+    UserSerializer,
+)
+
 logger = logging.getLogger(__name__)
 
 
-class UserViewSet(viewsets.GenericViewSet):
-    queryset = User.objects.all()
-    serializer_class = BaseUserSerializer
-    permission_classes = [IsAuthenticated]
+class UserViewSet(DjoserUserViewSet):
+    """Кастомный UserViewSet на основе Djoser."""
 
-    @action(
-        detail=False, methods=["get"], permission_classes=[IsAuthenticated]
-    )
-    def me(self, request):
+    @action(["get"], detail=False, permission_classes=[IsAuthenticated])
+    def me(self, request, *args, **kwargs):
         """Профиль текущего пользователя."""
         serializer = BaseUserSerializer(
             request.user, context={"request": request}
         )
         return Response(serializer.data)
 
-    @action(
-        detail=False, methods=["get"], permission_classes=[IsAuthenticated]
-    )
-    def subscriptions(self, request):
-        """Список подписок текущего пользователя."""
+    @action(["get"], detail=False, permission_classes=[IsAuthenticated])
+    def subscriptions(self, request, *args, **kwargs):
+        """Список подписок текущего пользователя (с пагинацией)."""
         author_ids = Subscription.objects.filter(
             user=request.user
         ).values_list("author_id", flat=True)
         queryset = User.objects.filter(id__in=author_ids)
 
         page = self.paginate_queryset(queryset)
-        serializer = SubscriptionUserSerializer(
+        serializer = UserSerializer(
             page or queryset, many=True, context={"request": request}
         )
-        if page:
-            return self.get_paginated_response(serializer.data)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     @action(
-        detail=True,
-        methods=["post", "delete"],
-        permission_classes=[IsAuthenticated],
+        ["post", "delete"], detail=True, permission_classes=[IsAuthenticated]
     )
-    def subscribe(self, request, pk=None):
-        """Подписка / отписка на пользователя."""
-        author = get_object_or_404(User, pk=pk)
+    def subscribe(self, request, id, *args, **kwargs):
+        """Подписка/отписка от пользователя."""
+        author = get_object_or_404(User, pk=id)
 
         if request.method == "POST":
             if request.user == author:
@@ -93,9 +88,7 @@ class UserViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Subscription.objects.create(user=request.user, author=author)
-            serializer = SubscriptionUserSerializer(
-                author, context={"request": request}
-            )
+            serializer = UserSerializer(author, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         deleted, _ = Subscription.objects.filter(
@@ -109,13 +102,13 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
+        ["put", "delete"],
         detail=False,
-        methods=["put", "delete"],
         url_path="me/avatar",
         permission_classes=[IsAuthenticated],
     )
-    def avatar(self, request):
-        """Загрузка / удаление аватара."""
+    def avatar(self, request, *args, **kwargs):
+        """Загрузка/удаление аватара."""
         user = request.user
 
         if request.method == "PUT":
