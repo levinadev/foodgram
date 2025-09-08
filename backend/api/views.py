@@ -84,8 +84,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        if not self.request.user.is_authenticated:
-            raise PermissionDenied("Необходимо войти в систему")
         serializer.save(author=self.request.user)
 
     @action(detail=True, methods=["get"], url_path="get-link")
