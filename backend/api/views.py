@@ -3,24 +3,18 @@ from io import BytesIO
 
 from django.db.models import Sum
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.filters import RecipeFilter
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
-
-from .permissions import IsAuthorOrReadOnly
-from .serializers import (
+from api.permissions import IsAuthorOrReadOnly
+from api.serializers import (
     AvatarSerializer,
     BaseUserSerializer,
     IngredientSerializer,
@@ -30,17 +24,17 @@ from .serializers import (
     SubscriptionUserSerializer,
     TagSerializer,
 )
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
+from users.models import Subscription, User
 
 logger = logging.getLogger(__name__)
-
-
-from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from users.models import Subscription, User
 
 
 class UserViewSet(viewsets.GenericViewSet):
