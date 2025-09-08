@@ -1,8 +1,9 @@
 import logging
+from io import BytesIO
 
 from django.conf import settings
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -175,9 +176,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         ingredients = self._get_shopping_cart_ingredients(request.user)
         content = self._format_shopping_list(ingredients)
-        response = HttpResponse(content, content_type="text/plain")
-        response["Content-Disposition"] = (
-            "attachment; filename=shopping_list.txt"
+
+        file_like = BytesIO(content.encode("utf-8"))
+        response = FileResponse(
+            file_like,
+            as_attachment=True,
+            filename="shopping_list.txt",
+            content_type="text/plain",
         )
         return response
 
