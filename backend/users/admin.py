@@ -14,6 +14,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         "is_active",
     )
     search_fields = ("username", "email")
+    list_filter = ("is_active", "is_staff", "is_superuser")
 
     def save_model(self, request, obj, form, change):
         if not change or "password" in form.changed_data:
@@ -21,4 +22,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-admin.site.register(Subscription)
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ("user", "author")
+    search_fields = ("user__email", "author__email")
