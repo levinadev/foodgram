@@ -11,11 +11,21 @@ from .models import (
 )
 
 
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+    extra = 1
+    min_num = 1
+    verbose_name = "Ингредиент"
+    verbose_name_plural = "Ингредиенты"
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ("name", "author", "get_favorites_count")
     search_fields = ("name", "author__username", "author__email")
     list_filter = ("tags",)
+    inlines = [RecipeIngredientInline]
+    filter_horizontal = ("tags",)
 
     @admin.display(description="Количество в избранном")
     def get_favorites_count(self, obj):
@@ -24,6 +34,14 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.annotate(favorite_count=Count("favorites"))
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        obj = form.instance
+        if obj.ingredients.count() == 0:
+            raise ValueError("Рецепт должен содержать хотя бы один ингредиент")
+        if obj.tags.count() == 0:
+            raise ValueError("Рецепт должен иметь хотя бы один тег")
 
 
 @admin.register(Ingredient)
