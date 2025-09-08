@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
+from api.constants import DEFAULT_PAGE_SIZE
 from config import (
     DB_HOST,
     DB_PORT,
     DJANGO_ALLOWED_HOSTS,
     DJANGO_DEBUG,
     DJANGO_SECRET_KEY,
-    FRONTEND_URL,
     POSTGRES_DB,
     POSTGRES_PASSWORD,
     POSTGRES_USER,
@@ -18,8 +18,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = DJANGO_DEBUG
-
-FRONTEND_URL = FRONTEND_URL
 
 CSRF_TRUSTED_ORIGINS = [f"http://{host}:8000" for host in DJANGO_ALLOWED_HOSTS]
 
@@ -96,12 +94,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+LANGUAGE_CODE = "ru-ru"
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
@@ -126,7 +122,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ],
     "DEFAULT_PAGINATION_CLASS": "api.pagination.LimitPageNumberPagination",
-    "PAGE_SIZE": 6,
+    "PAGE_SIZE": DEFAULT_PAGE_SIZE,
 }
 
 DJOSER = {

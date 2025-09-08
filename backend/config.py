@@ -17,6 +17,3 @@ DJANGO_ALLOWED_HOSTS = [
     for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
     if h.strip()
 ]
-
-# URL фронтенда (куда ведут короткие ссылки)
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost")

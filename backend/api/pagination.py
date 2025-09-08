@@ -1,9 +1,10 @@
 from rest_framework.pagination import PageNumberPagination
 
+from .constants import DEFAULT_PAGE_SIZE, PAGE_SIZE_QUERY_PARAM
+
 
 class LimitPageNumberPagination(PageNumberPagination):
-    """Кастомный пагинатор с фильтрации и параметру limit"""
+    """Кастомный пагинатор с фильтрации и параметру limit."""
 
-    page_size = 6
-    page_size_query_param = "limit"
-    max_page_size = 100
+    page_size = DEFAULT_PAGE_SIZE
+    page_size_query_param = PAGE_SIZE_QUERY_PARAM
