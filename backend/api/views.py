@@ -78,7 +78,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if tags:
                 qs = qs.filter(tags__slug__in=tags).distinct()
             if self.request.query_params.get("is_favorited") == "1":
-                qs = qs.filter(favorites__user=user)
+                qs = qs.filter(in_favorites__user=user)
         return qs
 
     def perform_create(self, serializer):
