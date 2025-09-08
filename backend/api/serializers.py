@@ -4,7 +4,6 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
 )
-from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -75,32 +74,6 @@ class ShortUserSerializer(BaseUserSerializer):
         if obj.avatar:
             return request.build_absolute_uri(obj.avatar.url)
         return None
-
-
-class UserSerializer(BaseUserSerializer):
-    """Расширенный сериализатор пользователя (профиль / подписки)."""
-
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-
-    class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + ("recipes", "recipes_count")
-
-    def get_recipes(self, obj):
-        """Отдает список рецептов пользователя."""
-        request = self.context.get("request")
-        recipes_qs = obj.recipes.all()
-        if request:
-            limit = request.query_params.get("recipes_limit")
-            if limit and limit.isdigit():
-                recipes_qs = recipes_qs[: int(limit)]
-        return ShortRecipeSerializer(
-            recipes_qs, many=True, context=self.context
-        ).data
-
-    def get_recipes_count(self, obj):
-        """Количество рецептов пользователя."""
-        return obj.recipes.count()
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
@@ -345,7 +318,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionUserSerializer(BaseUserSerializer):
-    """Сериализатор пользователя для подписок / me, возвращает рецепты."""
+    """Сериализатор для подписок / me, возвращает рецепты."""
 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
