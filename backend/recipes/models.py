@@ -1,4 +1,4 @@
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 
 from api.constants import (
@@ -8,6 +8,8 @@ from api.constants import (
     MAX_TAG_NAME_LENGTH,
     MAX_TAG_SLUG_LENGTH,
 )
+
+User = get_user_model()
 
 
 class Ingredient(models.Model):
@@ -64,7 +66,7 @@ class Recipe(models.Model):
     """Модель рецепта."""
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="recipes",
         help_text="Пользователь, который создал рецепт",
@@ -138,7 +140,7 @@ class Favorite(models.Model):
     """Модель избранного рецепта."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         help_text="Пользователь, добавивший рецепт в избранное",
         verbose_name="Пользователь",
@@ -162,7 +164,7 @@ class ShoppingCart(models.Model):
     """Модель корзины."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="shopping_cart",
         help_text="Пользователь, которому принадлежит список покупок",
