@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
 from api.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
@@ -40,13 +41,14 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     """Кастомная модель пользователя с логином по email."""
 
+    username_validator = UnicodeUsernameValidator()
+
     username = models.CharField(
         max_length=MAX_USERNAME_LENGTH,
         unique=True,
-        blank=True,
-        null=True,
         help_text="Имя пользователя",
         verbose_name="Имя пользователя",
+        validators=[username_validator],
     )
     email = models.EmailField(
         unique=True,
