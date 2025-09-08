@@ -64,9 +64,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
-            return RecipeCreateSerializer
-        return RecipeSerializer
+        if self.request.method in permissions.SAFE_METHODS:
+            return RecipeSerializer
+        return RecipeCreateSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()
