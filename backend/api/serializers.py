@@ -28,8 +28,8 @@ from .constants import (
 logger = logging.getLogger(__name__)
 
 
-class BaseUserSerializer(DjoserUserSerializer):
-    """Базовый сериализатор пользователя."""
+class UserSerializer(DjoserUserSerializer):
+    """Сериализатор пользователя."""
 
     avatar = Base64ImageField(required=False)
     is_subscribed = serializers.SerializerMethodField()
@@ -38,10 +38,10 @@ class BaseUserSerializer(DjoserUserSerializer):
         model = User
         fields = (
             "id",
-            "email",
             "username",
             "first_name",
             "last_name",
+            "email",
             "avatar",
             "is_subscribed",
         )
@@ -53,58 +53,28 @@ class BaseUserSerializer(DjoserUserSerializer):
             return False
         return Subscription.objects.filter(user=user, author=obj).exists()
 
+    def to_representation(self, instance):
+        """Добавляем поля recipes и recipes_count"""
+        data = super().to_representation(instance)
 
-class ShortUserSerializer(BaseUserSerializer):
-    """Короткий сериализатор для вложения автора в рецептах."""
+        include_recipes = self.context.get("include_recipes", False)
+        if include_recipes:
+            request = self.context.get("request")
+            recipes_qs = instance.recipes.all()
+            if request:
+                limit = request.query_params.get("recipes_limit")
+                if limit and limit.isdigit():
+                    recipes_qs = recipes_qs[: int(limit)]
+            data["recipes"] = ShortRecipeSerializer(
+                recipes_qs, many=True, context=self.context
+            ).data
+            data["recipes_count"] = instance.recipes.count()
 
-    avatar = serializers.SerializerMethodField()
-
-    class Meta(BaseUserSerializer.Meta):
-        fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "is_subscribed",
-            "avatar",
-        )
-
-    def get_avatar(self, obj):
-        request = self.context.get("request")
-        if obj.avatar:
-            return request.build_absolute_uri(obj.avatar.url)
-        return None
-
-
-class UserSerializer(BaseUserSerializer):
-    """Расширенный сериализатор пользователя (профиль / подписки)."""
-
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-
-    class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + ("recipes", "recipes_count")
-
-    def get_recipes(self, obj):
-        """Отдает список рецептов пользователя."""
-        request = self.context.get("request")
-        recipes_qs = obj.recipes.all()
-        if request:
-            limit = request.query_params.get("recipes_limit")
-            if limit and limit.isdigit():
-                recipes_qs = recipes_qs[: int(limit)]
-        return ShortRecipeSerializer(
-            recipes_qs, many=True, context=self.context
-        ).data
-
-    def get_recipes_count(self, obj):
-        """Количество рецептов пользователя."""
-        return obj.recipes.count()
+        return data
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
-    """Сериализатор для регистрации пользователей (Djoser)."""
+    """Сериализатор для регистрации пользователей."""
 
     first_name = serializers.CharField(
         required=True, max_length=MAX_NAME_LENGTH
@@ -125,6 +95,16 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
             "last_name",
             "username",
         )
+
+
+class AvatarSerializer(serializers.ModelSerializer):
+    """Сериализатор для изменения аватара."""
+
+    avatar = Base64ImageField()
+
+    class Meta:
+        model = User
+        fields = ("avatar",)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -154,7 +134,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         many=True, read_only=True, source="recipe_ingredients"
     )
     tags = TagSerializer(many=True)
-    author = ShortUserSerializer()
+    author = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField()
@@ -173,6 +153,29 @@ class RecipeSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         ]
+
+    def get_author(self, obj):
+        """Возвращает информацию об авторе для рецепта."""
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        author = obj.author
+        return {
+            "id": author.id,
+            "username": author.username,
+            "first_name": author.first_name,
+            "last_name": author.last_name,
+            "email": author.email,
+            "avatar": (
+                request.build_absolute_uri(author.avatar.url)
+                if author.avatar
+                else None
+            ),
+            "is_subscribed": (
+                Subscription.objects.filter(user=user, author=author).exists()
+                if user and user.is_authenticated
+                else False
+            ),
+        }
 
     def get_is_favorited(self, obj):
         """True, если рецепт в избранном у пользователя."""
@@ -328,14 +331,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """После создания/обновления возвращаем нормальный RecipeSerializer."""
         return RecipeSerializer(instance, context=self.context).data
-
-
-class AvatarSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField()
-
-    class Meta:
-        model = User
-        fields = ("avatar",)
 
 
 class IngredientSerializer(serializers.ModelSerializer):

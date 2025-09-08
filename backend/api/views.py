@@ -30,12 +30,12 @@ from users.models import Subscription, User
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     AvatarSerializer,
-    BaseUserSerializer,
     IngredientSerializer,
     RecipeCreateSerializer,
     RecipeSerializer,
     ShortRecipeSerializer,
     TagSerializer,
+    UserCreateSerializer,
     UserSerializer,
 )
 
@@ -43,19 +43,18 @@ logger = logging.getLogger(__name__)
 
 
 class UserViewSet(DjoserUserViewSet):
-    """Кастомный UserViewSet на основе Djoser."""
+    serializer_class = UserSerializer
+    create_serializer_class = UserCreateSerializer
 
     @action(["get"], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request, *args, **kwargs):
         """Профиль текущего пользователя."""
-        serializer = BaseUserSerializer(
-            request.user, context={"request": request}
-        )
+        serializer = UserSerializer(request.user, context={"request": request})
         return Response(serializer.data)
 
     @action(["get"], detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request, *args, **kwargs):
-        """Список подписок текущего пользователя (с пагинацией)."""
+        """Список подписок текущего пользователя."""
         author_ids = Subscription.objects.filter(
             user=request.user
         ).values_list("author_id", flat=True)
@@ -63,14 +62,18 @@ class UserViewSet(DjoserUserViewSet):
 
         page = self.paginate_queryset(queryset)
         serializer = UserSerializer(
-            page or queryset, many=True, context={"request": request}
+            page or queryset,
+            many=True,
+            context={"request": request, "include_recipes": True},
         )
-        return self.get_paginated_response(serializer.data)
+        if page:
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(
         ["post", "delete"], detail=True, permission_classes=[IsAuthenticated]
     )
-    def subscribe(self, request, id, *args, **kwargs):
+    def subscribe(self, request, id=None, *args, **kwargs):
         """Подписка/отписка от пользователя."""
         author = get_object_or_404(User, pk=id)
 
@@ -88,7 +91,9 @@ class UserViewSet(DjoserUserViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Subscription.objects.create(user=request.user, author=author)
-            serializer = UserSerializer(author, context={"request": request})
+            serializer = UserSerializer(
+                author, context={"request": request, "include_recipes": True}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         deleted, _ = Subscription.objects.filter(
