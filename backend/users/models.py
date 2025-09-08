@@ -1,9 +1,12 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+
+from api.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
 
 
 class UserManager(BaseUserManager):
-    """Менеджер пользователей с авторизацией по email"""
+    """Менеджер пользователей с авторизацией по email."""
 
     use_in_migrations = True
 
@@ -36,51 +39,70 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    """Кастомная модель пользователя с логином по email"""
+    """Кастомная модель пользователя с логином по email."""
+
+    username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
-        max_length=150,
+        max_length=MAX_USERNAME_LENGTH,
         unique=True,
-        blank=True,
-        null=True,
         help_text="Имя пользователя",
+        verbose_name="Имя пользователя",
+        validators=[username_validator],
     )
     email = models.EmailField(
-        unique=True, max_length=254, help_text="Электронная почта"
+        unique=True,
+        max_length=MAX_EMAIL_LENGTH,
+        help_text="Электронная почта",
+        verbose_name="Электронная почта",
     )
     avatar = models.ImageField(
-        upload_to="users/", blank=True, null=True, help_text="Аватар"
+        upload_to="users/",
+        blank=True,
+        null=True,
+        help_text="Аватар",
+        verbose_name="Аватар",
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
-    objects = UserManager()
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        ordering = ["username"]
 
     def __str__(self):
         return self.email
 
 
 class Subscription(models.Model):
-    """Модель подписки пользователя на автора"""
+    """Модель подписки пользователя на автора."""
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="subscriptions",
         help_text="Пользователь, который подписывается",
+        verbose_name="Пользователь",
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="subscribers",
         help_text="Автор, на которого подписываются",
+        verbose_name="Автор",
     )
 
-    objects = models.Manager()
-
     class Meta:
-        unique_together = ("user", "author")
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+        ordering = ["user__username", "author__username"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "author"], name="unique_subscription"
+            )
+        ]
 
     def __str__(self):
         return f"{self.user} → {self.author}"
