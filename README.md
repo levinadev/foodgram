@@ -1,5 +1,8 @@
 # Foodgram
 
+![CI/CD](https://github.com/levinadev/foodgram/actions/workflows/foodgram_workflow.yml/badge.svg)
+
+
 **Foodgram** — это онлайн-сервис для публикации рецептов.
 
 ## Возможности
