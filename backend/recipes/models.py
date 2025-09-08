@@ -143,10 +143,15 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        unique_together = ("recipe", "ingredient")
         verbose_name = "Ингредиент рецепта"
         verbose_name_plural = "Ингредиенты рецептов"
         ordering = ["recipe__name", "ingredient__name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["recipe", "ingredient"],
+                name="unique_recipe_ingredient",
+            )
+        ]
 
 
 class Favorite(models.Model):
@@ -167,10 +172,14 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        unique_together = ("user", "recipe")
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         ordering = ["-id"]  # сначала новые записи
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique_favorite"
+            )
+        ]
 
 
 class ShoppingCart(models.Model):
@@ -192,10 +201,14 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        unique_together = ("user", "recipe")
         verbose_name = "Список покупок"
         verbose_name_plural = "Списки покупок"
         ordering = ["-id"]  # сначала новые записи
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique_shopping_cart"
+            )
+        ]
 
     def __str__(self):
         return f"{self.user} — {self.recipe}"
