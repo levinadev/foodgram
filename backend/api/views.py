@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -90,7 +91,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="get-link")
     def get_link(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
-        short_link = f"{settings.FRONTEND_URL}/recipes/{recipe.id}"
+        relative_url = reverse("recipes-detail", kwargs={"pk": recipe.id})
+        short_link = request.build_absolute_uri(relative_url)
         return Response({"short-link": short_link})
 
     @action(detail=True, methods=["post", "delete"], url_path="favorite")

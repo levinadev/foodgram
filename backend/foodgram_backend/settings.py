@@ -8,7 +8,6 @@ from config import (
     DJANGO_ALLOWED_HOSTS,
     DJANGO_DEBUG,
     DJANGO_SECRET_KEY,
-    FRONTEND_URL,
     POSTGRES_DB,
     POSTGRES_PASSWORD,
     POSTGRES_USER,
@@ -19,8 +18,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = DJANGO_DEBUG
-
-FRONTEND_URL = FRONTEND_URL
 
 CSRF_TRUSTED_ORIGINS = [f"http://{host}:8000" for host in DJANGO_ALLOWED_HOSTS]
 

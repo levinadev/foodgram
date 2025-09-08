@@ -53,7 +53,6 @@ DB_PORT=5432
 DJANGO_SECRET_KEY='django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo'
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=89.169.188.80,foodgramanna.ddns.net,91.200.151.93,localhost,127.0.0.1
-FRONTEND_URL='http://localhost'
 ```
 
 3. Запуск:
