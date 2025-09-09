@@ -57,12 +57,12 @@ class User(AbstractUser):
         verbose_name="Электронная почта",
     )
     first_name = models.CharField(
-        max_length=150,
+        max_length=MAX_USERNAME_LENGTH,
         blank=False,
         verbose_name="Имя",
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=MAX_USERNAME_LENGTH,
         blank=False,
         verbose_name="Фамилия",
     )
