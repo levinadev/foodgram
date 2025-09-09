@@ -305,15 +305,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop("ingredients", None)
-        tags = validated_data.pop("tags", None)
+        ingredients_data = validated_data.pop("ingredients")
+        tags = validated_data.pop("tags")
+        instance.tags.set(tags)
 
-        if tags is not None:
-            instance.tags.set(tags)
-
-        if ingredients_data is not None:
-            instance.recipe_ingredients.all().delete()
-            self._create_ingredients(instance, ingredients_data)
+        instance.recipe_ingredients.all().delete()
+        self._create_ingredients(instance, ingredients_data)
 
         return super().update(instance, validated_data)
 
