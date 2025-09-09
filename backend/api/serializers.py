@@ -308,8 +308,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop("ingredients", None)
         tags = validated_data.pop("tags", None)
 
-        instance = super().update(instance, validated_data)
-
         if tags is not None:
             instance.tags.set(tags)
 
@@ -317,7 +315,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             instance.recipe_ingredients.all().delete()
             self._create_ingredients(instance, ingredients_data)
 
-        return instance
+        return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         """После создания/обновления возвращаем нормальный RecipeSerializer."""
