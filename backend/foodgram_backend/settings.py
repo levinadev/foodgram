@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from api.constants import DEFAULT_PAGE_SIZE
+from common.constants import DEFAULT_PAGE_SIZE
 from config import (
     DB_HOST,
     DB_PORT,

@@ -29,11 +29,11 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description="Количество в избранном")
     def get_favorites_count(self, obj):
-        return obj.in_favorites.count()
+        return obj.favorites.count()
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        return queryset.annotate(favorite_count=Count("in_favorites"))
+        return queryset.annotate(favorite_count=Count("favorites"))
 
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
