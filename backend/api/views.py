@@ -144,17 +144,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeSerializer
         return RecipeCreateSerializer
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        user = self.request.user
-        if user.is_authenticated:
-            tags = self.request.query_params.getlist("tags")
-            if tags:
-                qs = qs.filter(tags__slug__in=tags).distinct()
-            if self.request.query_params.get("is_favorited") == "1":
-                qs = qs.filter(favorites__user=user)
-        return qs
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
