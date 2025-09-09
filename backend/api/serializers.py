@@ -46,11 +46,11 @@ class UserSerializer(DjoserUserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        request = self.context.get("request")
-        user = getattr(request, "user", None)
-        if not user or not user.is_authenticated:
-            return False
-        return Subscription.objects.filter(user=user, author=obj).exists()
+        user = getattr(self.context.get("request"), "user", None)
+        return (
+            user.is_authenticated
+            and user.subscriptions.filter(author=obj).exists()
+        )
 
     def to_representation(self, instance):
         """Добавляем поля recipes и recipes_count"""
