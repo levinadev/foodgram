@@ -166,25 +166,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         """Возвращает информацию об авторе для рецепта."""
         request = self.context.get("request")
-        user = getattr(request, "user", None)
-        author = obj.author
-        return {
-            "id": author.id,
-            "username": author.username,
-            "first_name": author.first_name,
-            "last_name": author.last_name,
-            "email": author.email,
-            "avatar": (
-                request.build_absolute_uri(author.avatar.url)
-                if author.avatar
-                else None
-            ),
-            "is_subscribed": (
-                Subscription.objects.filter(user=user, author=author).exists()
-                if user and user.is_authenticated
-                else False
-            ),
-        }
+        return UserSerializer(obj.author, context={"request": request}).data
 
     def get_is_favorited(self, obj):
         """True, если рецепт в избранном у пользователя."""
