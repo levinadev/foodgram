@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from api.constants import (
+from common.constants import (
     MAX_COOKING_TIME,
     MAX_INGREDIENT_NAME_LENGTH,
     MAX_MEASUREMENT_UNIT_LENGTH,
@@ -172,7 +172,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name="in_favorites",
+        related_name="favorites",
         help_text="Рецепт, добавленный в избранное",
         verbose_name="Рецепт",
     )
@@ -204,7 +204,7 @@ class ShoppingCart(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name="in_shopping_cart",
+        related_name="shopping_carts",
         help_text="Рецепт, добавленный в список покупок",
         verbose_name="Рецепт",
     )
