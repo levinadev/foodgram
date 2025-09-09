@@ -8,15 +8,7 @@ from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from recipes.models import (
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    Tag,
-)
-from users.models import Subscription, User
-
-from .constants import (
+from common.constants import (
     MAX_COOKING_TIME,
     MAX_INGREDIENT_AMOUNT,
     MAX_NAME_LENGTH,
@@ -24,6 +16,13 @@ from .constants import (
     MIN_COOKING_TIME,
     MIN_INGREDIENT_AMOUNT,
 )
+from recipes.models import (
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    Tag,
+)
+from users.models import Subscription, User
 
 logger = logging.getLogger(__name__)
 

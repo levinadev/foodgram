@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from api.constants import (
+from common.constants import (
     MAX_COOKING_TIME,
     MAX_INGREDIENT_NAME_LENGTH,
     MAX_MEASUREMENT_UNIT_LENGTH,

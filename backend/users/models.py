@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
-from api.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
+from common.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
 
 
 class UserManager(BaseUserManager):
