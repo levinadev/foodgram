@@ -1,5 +1,3 @@
-import logging
-
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from djoser.serializers import (
     UserCreateSerializer as DjoserUserCreateSerializer,
@@ -22,9 +20,7 @@ from recipes.models import (
     RecipeIngredient,
     Tag,
 )
-from users.models import Subscription, User
-
-logger = logging.getLogger(__name__)
+from users.models import User
 
 
 class UserSerializer(DjoserUserSerializer):
@@ -83,7 +79,17 @@ class SubscriptionSerializer(UserSerializer):
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
-    """Сериализатор для регистрации пользователей."""
+    """
+    Кастомный сериализатор для регистрации пользователей.
+
+    Необходим для того, чтобы сделать обязательными поля:
+    - first_name
+    - last_name
+    - username
+
+    Это нужно для прохождения тестов, которые проверяют, что при
+    отсутствии этих полей при регистрации возвращается ошибка 400.
+    """
 
     first_name = serializers.CharField(
         required=True, max_length=MAX_NAME_LENGTH
