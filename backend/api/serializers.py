@@ -265,8 +265,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 {"ingredients": "Нельзя создать рецепт без ингредиентов."}
             )
 
-        ingredient_ids = [item["id"] for item in ingredients]
-        if len(ingredient_ids) != len(set(ingredient_ids)):
+        ingredient_ids = {item["id"] for item in ingredients}
+        if len(ingredients) != len(ingredient_ids):
             raise serializers.ValidationError(
                 {"ingredients": "Ингредиенты не должны повторяться."}
             )
@@ -276,8 +276,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 {"tags": "Нельзя создать рецепт без тегов."}
             )
 
-        tag_ids = [tag.id for tag in tags]
-        if len(tag_ids) != len(set(tag_ids)):
+        tag_ids = {tag.id for tag in tags}
+        if len(tags) != len(tag_ids):
             raise serializers.ValidationError(
                 {"tags": "Теги не должны повторяться."}
             )
