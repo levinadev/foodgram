@@ -1,7 +1,3 @@
-from django.contrib.auth.validators import UnicodeUsernameValidator
-from djoser.serializers import (
-    UserCreateSerializer as DjoserUserCreateSerializer,
-)
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -9,8 +5,6 @@ from rest_framework import serializers
 from common.constants import (
     MAX_COOKING_TIME,
     MAX_INGREDIENT_AMOUNT,
-    MAX_NAME_LENGTH,
-    MAX_USERNAME_LENGTH,
     MIN_COOKING_TIME,
     MIN_INGREDIENT_AMOUNT,
 )
@@ -76,40 +70,6 @@ class SubscriptionSerializer(UserSerializer):
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
-
-
-class UserCreateSerializer(DjoserUserCreateSerializer):
-    """
-    Кастомный сериализатор для регистрации пользователей.
-
-    Необходим для того, чтобы сделать обязательными поля:
-    - first_name
-    - last_name
-    - username
-
-    Это нужно для прохождения тестов, которые проверяют, что при
-    отсутствии этих полей при регистрации возвращается ошибка 400.
-    """
-
-    first_name = serializers.CharField(
-        required=True, max_length=MAX_NAME_LENGTH
-    )
-    last_name = serializers.CharField(
-        required=True, max_length=MAX_NAME_LENGTH
-    )
-    username = serializers.CharField(
-        required=True,
-        max_length=MAX_USERNAME_LENGTH,
-        validators=[UnicodeUsernameValidator()],
-    )
-
-    class Meta(DjoserUserCreateSerializer.Meta):
-        model = User
-        fields = DjoserUserCreateSerializer.Meta.fields + (
-            "first_name",
-            "last_name",
-            "username",
-        )
 
 
 class AvatarSerializer(serializers.ModelSerializer):

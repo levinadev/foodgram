@@ -56,6 +56,16 @@ class User(AbstractUser):
         help_text="Электронная почта",
         verbose_name="Электронная почта",
     )
+    first_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name="Имя",
+    )
+    last_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name="Фамилия",
+    )
     avatar = models.ImageField(
         upload_to="users/",
         blank=True,
