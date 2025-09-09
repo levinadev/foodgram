@@ -157,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if tags:
                 qs = qs.filter(tags__slug__in=tags).distinct()
             if self.request.query_params.get("is_favorited") == "1":
-                qs = qs.filter(in_favorites__user=user)
+                qs = qs.filter(favorites__user=user)
         return qs
 
     def perform_create(self, serializer):
@@ -234,9 +234,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def _get_shopping_cart_ingredients(self, user):
         return (
-            RecipeIngredient.objects.filter(
-                recipe__in_shopping_cart__user=user
-            )
+            RecipeIngredient.objects.filter(recipe__shopping_carts__user=user)
             .values("ingredient__name", "ingredient__measurement_unit")
             .annotate(total_amount=Sum("amount"))
             .order_by("ingredient__name")

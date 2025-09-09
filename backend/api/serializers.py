@@ -182,7 +182,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return (
             user
             and user.is_authenticated
-            and obj.in_favorites.filter(user=user).exists()
+            and obj.favorites.filter(user=user).exists()
         )
 
     def get_is_in_shopping_cart(self, obj):
@@ -191,7 +191,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return (
             user
             and user.is_authenticated
-            and obj.in_shopping_cart.filter(user=user).exists()
+            and obj.shopping_carts.filter(user=user).exists()
         )
 
 
