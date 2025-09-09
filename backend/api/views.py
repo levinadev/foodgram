@@ -34,6 +34,7 @@ from .serializers import (
     RecipeCreateSerializer,
     RecipeSerializer,
     ShortRecipeSerializer,
+    SubscriptionSerializer,
     TagSerializer,
     UserCreateSerializer,
     UserSerializer,
@@ -61,10 +62,10 @@ class UserViewSet(DjoserUserViewSet):
         queryset = User.objects.filter(id__in=author_ids)
 
         page = self.paginate_queryset(queryset)
-        serializer = UserSerializer(
+        serializer = SubscriptionSerializer(
             page or queryset,
             many=True,
-            context={"request": request, "include_recipes": True},
+            context={"request": request},
         )
         if page:
             return self.get_paginated_response(serializer.data)
@@ -91,8 +92,8 @@ class UserViewSet(DjoserUserViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Subscription.objects.create(user=request.user, author=author)
-            serializer = UserSerializer(
-                author, context={"request": request, "include_recipes": True}
+            serializer = SubscriptionSerializer(
+                author, context={"request": request}
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

@@ -52,24 +52,34 @@ class UserSerializer(DjoserUserSerializer):
             and user.subscriptions.filter(author=obj).exists()
         )
 
-    def to_representation(self, instance):
-        """Добавляем поля recipes и recipes_count"""
-        data = super().to_representation(instance)
 
-        include_recipes = self.context.get("include_recipes", False)
-        if include_recipes:
-            request = self.context.get("request")
-            recipes_qs = instance.recipes.all()
-            if request:
-                limit = request.query_params.get("recipes_limit")
-                if limit and limit.isdigit():
-                    recipes_qs = recipes_qs[: int(limit)]
-            data["recipes"] = ShortRecipeSerializer(
-                recipes_qs, many=True, context=self.context
-            ).data
-            data["recipes_count"] = instance.recipes.count()
+class SubscriptionSerializer(UserSerializer):
+    """Сериализатор для подписок."""
 
-        return data
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta(UserSerializer.Meta):
+        model = User
+        fields = UserSerializer.Meta.fields + (
+            "recipes",
+            "recipes_count",
+        )
+
+    def get_recipes(self, obj):
+        """Возвращает рецепты автора."""
+        request = self.context.get("request")
+        recipes_qs = obj.recipes.all()
+        if request:
+            limit = request.query_params.get("recipes_limit")
+            if limit and limit.isdigit():
+                recipes_qs = recipes_qs[: int(limit)]
+        return ShortRecipeSerializer(
+            recipes_qs, many=True, context=self.context
+        ).data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
