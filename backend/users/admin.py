@@ -19,15 +19,13 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("username", "email")
     list_filter = ("is_active", "is_staff", "is_superuser")
 
+    @admin.display(description="Рецептов")
     def recipes_count(self, obj):
         return obj.recipes.count()
 
-    recipes_count.short_description = "Рецептов"
-
+    @admin.display(description="Подписчиков")
     def subscribers_count(self, obj):
         return obj.subscribers.count()
-
-    subscribers_count.short_description = "Подписчиков"
 
     def save_model(self, request, obj, form, change):
         if not change or "password" in form.changed_data:
