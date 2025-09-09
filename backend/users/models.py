@@ -2,7 +2,11 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
-from common.constants import MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
+from common.constants import (
+    MAX_EMAIL_LENGTH,
+    MAX_NAME_LENGTH,
+    MAX_USERNAME_LENGTH,
+)
 
 
 class UserManager(BaseUserManager):
@@ -57,13 +61,15 @@ class User(AbstractUser):
         verbose_name="Электронная почта",
     )
     first_name = models.CharField(
-        max_length=MAX_USERNAME_LENGTH,
+        max_length=MAX_NAME_LENGTH,
         blank=False,
+        help_text="Имя",
         verbose_name="Имя",
     )
     last_name = models.CharField(
-        max_length=MAX_USERNAME_LENGTH,
+        max_length=MAX_NAME_LENGTH,
         blank=False,
+        help_text="Фамилия",
         verbose_name="Фамилия",
     )
     avatar = models.ImageField(
