@@ -166,9 +166,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         deleted, _ = model.objects.filter(
             user=self.request.user, recipe=recipe
         ).delete()
-        if not deleted:
-            return None
-        return True
+        return deleted
 
     @action(detail=True, methods=["post", "delete"], url_path="favorite")
     def favorite(self, request, pk=None):
