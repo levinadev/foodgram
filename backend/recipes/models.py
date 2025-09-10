@@ -147,11 +147,17 @@ class RecipeIngredient(models.Model):
         validators=[
             MinValueValidator(
                 MIN_INGREDIENT_AMOUNT,
-                message=f"Количество должно быть не меньше {MIN_COOKING_TIME}.",
+                message=(
+                    f"Количество должно быть не меньше "
+                    f"{MIN_INGREDIENT_AMOUNT}."
+                ),
             ),
             MaxValueValidator(
                 MAX_INGREDIENT_AMOUNT,
-                message=f"Количество не может превышать {MIN_COOKING_TIME}",
+                message=(
+                    f"Количество не может превышать "
+                    f"{MAX_INGREDIENT_AMOUNT}."
+                ),
             ),
         ],
     )
