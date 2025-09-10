@@ -160,7 +160,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).delete()
         return deleted, ShortRecipeSerializer(recipe).data
 
-    def _handle_relation(self, model, recipe, action_text):
+    def _handle_relation(self, model, pk, action_text):
+        recipe = get_object_or_404(Recipe, pk=pk)
+
         if self.request.method == "POST":
             created, data = self._add_to_relation(model, recipe)
             if not created:
@@ -180,13 +182,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post", "delete"], url_path="favorite")
     def favorite(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        return self._handle_relation(Favorite, recipe, "в избранном")
+        return self._handle_relation(Favorite, pk, "в избранном")
 
     @action(detail=True, methods=["post", "delete"], url_path="shopping_cart")
     def shopping_cart(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        return self._handle_relation(ShoppingCart, recipe, "в списке покупок")
+        return self._handle_relation(ShoppingCart, pk, "в списке покупок")
 
     def _get_shopping_cart_ingredients(self, user):
         return (

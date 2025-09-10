@@ -4,12 +4,14 @@ from django.db import models
 
 from common.constants import (
     MAX_COOKING_TIME,
+    MAX_INGREDIENT_AMOUNT,
     MAX_INGREDIENT_NAME_LENGTH,
     MAX_MEASUREMENT_UNIT_LENGTH,
     MAX_RECIPE_NAME_LENGTH,
     MAX_TAG_NAME_LENGTH,
     MAX_TAG_SLUG_LENGTH,
     MIN_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
 )
 
 User = get_user_model()
@@ -142,6 +144,16 @@ class RecipeIngredient(models.Model):
     amount = models.PositiveIntegerField(
         help_text="Количество ингредиента в рецепте",
         verbose_name="Количество",
+        validators=[
+            MinValueValidator(
+                MIN_INGREDIENT_AMOUNT,
+                message=f"Количество должно быть не меньше {MIN_COOKING_TIME}.",
+            ),
+            MaxValueValidator(
+                MAX_INGREDIENT_AMOUNT,
+                message=f"Количество не может превышать {MIN_COOKING_TIME}",
+            ),
+        ],
     )
 
     class Meta:
