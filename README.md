@@ -6,9 +6,9 @@
 
 ## Демо
 
-- [Развернутый проект](http://89.169.188.80:8000)  
-- [Административная панель](http://89.169.188.80:8000/admin/)  
-- [Документация к API](http://89.169.188.80:8000/api/docs/)  
+- [Развернутый проект](https://foodgramanna.ddns.net)  
+- [Административная панель](https://foodgramanna.ddns.net/admin/)  
+- [Документация к API](https://foodgramanna.ddns.net/api/docs/)  
 
 Данные для входа в админку:
 ```
@@ -27,21 +27,20 @@ wBkyisAt
 - Подсчет ингредиентов
 
 ## Примеры использования API:
-- [Регистрация](http://89.169.188.80:8000/signup)  
-- [Авторизация](http://89.169.188.80:8000/signin)  
-- [Страница с рецептами](http://89.169.188.80:8000/recipes)  
-- [Создать рецепт](http://89.169.188.80:8000/recipes/create)  
-- [Текущий профиль](http://89.169.188.80:8000/user/me)  
-- [Профиль администратора](http://89.169.188.80:8000/user/1)  
-- [Смена пароля](http://89.169.188.80:8000/change-password)  
-- [Избранные рецепты](http://89.169.188.80:8000/favorites)  
-- [Список подписок](http://89.169.188.80:8000/subscriptions)  
-- [Список покупок](http://89.169.188.80:8000/cart)  
+- [Регистрация](https://foodgramanna.ddns.net/signup)  
+- [Авторизация](https://foodgramanna.ddns.net/signin)  
+- [Страница с рецептами](https://foodgramanna.ddns.net/recipes)  
+- [Создать рецепт](https://foodgramanna.ddns.net/recipes/create)
+- [Текущий профиль](https://foodgramanna.ddns.net/user/me)  
+- [Профиль администратора](https://foodgramanna.ddns.net/user/1)  
+- [Смена пароля](https://foodgramanna.ddns.net/change-password)  
+- [Избранные рецепты](https://foodgramanna.ddns.net/favorites)  
+- [Список подписок](https://foodgramanna.ddns.net/subscriptions)  
+- [Список покупок](https://foodgramanna.ddns.net/cart)  
 
 ## Установка и запуск локально
 
 1. Клонировать репозитория:
-
 ```
 git clone https://github.com/levinadev/foodgram.git
 cd foodgram
@@ -60,7 +59,6 @@ DJANGO_ALLOWED_HOSTS=89.169.188.80,foodgramanna.ddns.net,91.200.151.93,localhost
 ```
 
 3. Запуск:
-
 ```
 docker-compose -f docker-compose.production.yml up -d
 ```
