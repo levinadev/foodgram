@@ -19,9 +19,11 @@ SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = DJANGO_DEBUG
 
-CSRF_TRUSTED_ORIGINS = [f"http://{host}:8000" for host in DJANGO_ALLOWED_HOSTS]
-
 ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS
+
+CSRF_TRUSTED_ORIGINS = [f"http://{host}" for host in DJANGO_ALLOWED_HOSTS] + [
+    f"https://{host}" for host in DJANGO_ALLOWED_HOSTS
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
