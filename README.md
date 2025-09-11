@@ -10,11 +10,6 @@
 - [Административная панель](https://foodgramanna.ddns.net/admin/)  
 - [Документация к API](https://foodgramanna.ddns.net/api/docs/)  
 
-Данные для входа в админку:
-```
-superuser@mail.com
-wBkyisAt
-```
 
 ## Возможности
 - Регистрация и авторизация пользователей  
