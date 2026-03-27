@@ -4,13 +4,6 @@
 
 **Foodgram** — это онлайн-сервис для публикации рецептов.
 
-## Демо
-
-- [Развернутый проект](https://foodgramanna.ddns.net)  
-- [Административная панель](https://foodgramanna.ddns.net/admin/)  
-- [Документация к API](https://foodgramanna.ddns.net/api/docs/)  
-
-
 ## Возможности
 - Регистрация и авторизация пользователей  
 - Смена пароля и загрузка аватара пользователя
@@ -20,18 +13,6 @@
 - Фильтрация рецептов по тегам
 - Формирование списка покупок 
 - Подсчет ингредиентов
-
-## Примеры использования API:
-- [Регистрация](https://foodgramanna.ddns.net/signup)  
-- [Авторизация](https://foodgramanna.ddns.net/signin)  
-- [Страница с рецептами](https://foodgramanna.ddns.net/recipes)  
-- [Создать рецепт](https://foodgramanna.ddns.net/recipes/create)
-- [Текущий профиль](https://foodgramanna.ddns.net/user/me)  
-- [Профиль администратора](https://foodgramanna.ddns.net/user/1)  
-- [Смена пароля](https://foodgramanna.ddns.net/change-password)  
-- [Избранные рецепты](https://foodgramanna.ddns.net/favorites)  
-- [Список подписок](https://foodgramanna.ddns.net/subscriptions)  
-- [Список покупок](https://foodgramanna.ddns.net/cart)  
 
 ## Установка и запуск локально
 
