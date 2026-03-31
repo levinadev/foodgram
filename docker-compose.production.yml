@@ -53,7 +53,7 @@ services:
     image: annalevina/foodgram_frontend
     container_name: foodgram-front
     volumes:
-      - ../frontend/:/app/result_build/
+      - ./frontend/:/app/result_build/
 
   nginx:
     image: annalevina/foodgram_nginx
@@ -61,8 +61,8 @@ services:
     ports:
       - "8002:80"
     volumes:
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
+      - ./frontend/build:/usr/share/nginx/html/
+      - ./docs/:/usr/share/nginx/html/api/docs/
       - media_volume:/var/www/media:ro
       - static_volume:/var/www/static:ro
     depends_on:
