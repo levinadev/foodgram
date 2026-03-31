@@ -59,7 +59,7 @@ services:
     image: annalevina/foodgram_nginx
     container_name: foodgram-proxy
     ports:
-      - "8000:80"
+      - "8002:80"
     volumes:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
