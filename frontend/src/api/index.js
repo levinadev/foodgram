@@ -10,13 +10,7 @@ class Api {
         return resolve(res);
       }
       const func = res.status < 400 ? resolve : reject;
-      const contentType = res.headers.get("content-type") || "";
-      if (contentType.includes("application/json")) {
-        return res.json().then((data) => func(data));
-      }
-      return res.text().then((text) =>
-        func({ detail: text || `Request failed with status ${res.status}` })
-      );
+      res.json().then((data) => func(data));
     });
   }
 
@@ -141,31 +135,26 @@ class Api {
   } = {}) {
     const token = localStorage.getItem("token");
     const authorization = token ? { authorization: `Token ${token}` } : {};
-    const params = new URLSearchParams();
-    const normalizedPage = Number.parseInt(page, 10);
-    params.set("page", Number.isNaN(normalizedPage) ? "1" : String(normalizedPage));
-    params.set("limit", String(limit));
-    if (author) {
-      params.set("author", String(author));
-    }
-    if (is_favorited) {
-      params.set("is_favorited", String(is_favorited));
-    }
-    if (is_in_shopping_cart) {
-      params.set("is_in_shopping_cart", String(is_in_shopping_cart));
-    }
-    if (tags) {
-      tags
-        .filter((tag) => tag.value)
-        .forEach((tag) => params.append("tags", tag.slug));
-    }
-    return fetch(`/api/recipes/?${params.toString()}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        ...authorization,
-      },
-    }).then(this.checkResponse);
+    const tagsString = tags
+      ? tags
+          .filter((tag) => tag.value)
+          .map((tag) => `&tags=${tag.slug}`)
+          .join("")
+      : "";
+    return fetch(
+      `/api/recipes/?page=${page}&limit=${limit}${
+        author ? `&author=${author}` : ""
+      }${is_favorited ? `&is_favorited=${is_favorited}` : ""}${
+        is_in_shopping_cart ? `&is_in_shopping_cart=${is_in_shopping_cart}` : ""
+      }${tagsString}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          ...authorization,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getRecipe({ recipe_id }) {
