@@ -27,17 +27,11 @@ git clone https://github.com/levinadev/foodgram.git
 cd foodgram
 ```
 
-2. Создать файл `.env` в корне проекта с таким содержимым:
+2. Создать файл `.env` в корне проекта на основе шаблона:
 ```
-POSTGRES_DB=foodgram
-POSTGRES_USER=foodgram_user
-POSTGRES_PASSWORD=foodgram_password
-DB_HOST=db
-DB_PORT=5432
-DJANGO_SECRET_KEY='django-insecure-hlqrll@a+2wr-va9)0fw*r)+$)&i6*!u4na&z4z5b#2kx86=jo'
-DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=89.169.188.80,foodgramanna.ddns.net,91.200.151.93,localhost,127.0.0.1
+cp .env.example .env
 ```
+При необходимости измените значения переменных в `.env` (например, `DJANGO_SECRET_KEY` и `DJANGO_ALLOWED_HOSTS`) под ваше окружение.
 
 3. Запуск:
 ```
