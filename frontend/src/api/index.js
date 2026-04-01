@@ -10,7 +10,13 @@ class Api {
         return resolve(res);
       }
       const func = res.status < 400 ? resolve : reject;
-      res.json().then((data) => func(data));
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        return res.json().then((data) => func(data));
+      }
+      return res.text().then((text) =>
+        func({ detail: text || `Request failed with status ${res.status}` })
+      );
     });
   }
 
