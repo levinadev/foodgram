@@ -21,7 +21,7 @@
 
 ## Установка и запуск локально
 
-1. Клонировать репозитория:
+1. Клонировать репозиторий:
 ```
 git clone https://github.com/levinadev/foodgram.git
 cd foodgram
